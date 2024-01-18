@@ -1,12 +1,11 @@
 
 
 function NavBar() {
-    return (
-        <>
-         
-        </>
-    )
+  return (
+    <>
+     
+    </>
+  )
 }
 
 export default NavBar
-

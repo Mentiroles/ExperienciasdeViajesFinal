@@ -2,7 +2,7 @@
 function CreateRecommendation() {
     return (
         <>
-         
+         <h1>CreateRecommendation</h1>
         </>
     )
 }

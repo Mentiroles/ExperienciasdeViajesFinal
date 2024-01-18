@@ -3,7 +3,7 @@
 function EditRecommendation() {
     return (
         <>
-         
+         <h1>EditRecommendation</h1>
         </>
     )
 }
