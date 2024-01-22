@@ -7,6 +7,9 @@ import CreateRecommendation from './pages/createRecommendation/CreateRecommendat
 import EditRecommendation from './pages/editRecommendation/EditRecommendation'
 import Recommendations from './pages/recommendations/Recommendations'
 import RegisterForm from './pages/RegisterForm/RegisterForm'
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 
 function App() {
