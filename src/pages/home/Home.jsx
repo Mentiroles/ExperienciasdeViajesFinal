@@ -1,16 +1,12 @@
 import SearchBar from "../../components/SearchBar/SearchBar"
-import NavBarx from "../../components/NavBar/NavBarx"
 import Recommendations from "../../components/Recommendations/Recommendations"
 
 function Home() {
     return (
         <>
-         <h1>Home</h1>
-         <NavBarx/>
+            <h2 className="text-center mt-5 mb-5 text-primary">Descubre nuevos destinos y comparte tus experiencias!</h2>
          <SearchBar/>
          <Recommendations/>
-         //boton de registro
-
         </>
     )
 }
