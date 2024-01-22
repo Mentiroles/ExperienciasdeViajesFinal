@@ -1,34 +1,62 @@
+import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/authContext';
 
-function Navbarx() {
-  return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand href="#home">React-Bootstrap MOTHERFUCKER</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown>
+function NavBarx() {
+  
+  const {user} = useContext(AuthContext);
+  
+
+  if (user === true) {
+    return (
+      <Navbar expand="lg" className="bg-body-tertiary mb-3 sticky-top shadow p-3">
+      <Container fluid>
+        <Link to="/" className="navbar-brand">Logo</Link>
+        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Collapse id="navbarScroll" className="justify-content-end">
+          <Nav
+            className="me-2 my-2 my-lg-0"
+            style={{ maxHeight: '200px' }}
+            navbarScroll
+          >
+            <Link to="/recommendations" className="nav-link">Recommendations</Link>
+            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/profile" className="nav-link">Profile</Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  );
+
+      
+    )
+  } else {
+    return (
+    <Navbar expand="lg" className="bg-body-tertiary mb-3 sticky-top shadow p-3">
+      <Container fluid>
+        <Link to="/" className="navbar-brand">Logo</Link>
+        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Collapse id="navbarScroll" className="justify-content-end">
+          <Nav
+            className="me-2 my-2 my-lg-0"
+            style={{ maxHeight: '200px' }}
+            navbarScroll
+          >
+            <Link to="/recommendations" className="nav-link">Recommendations</Link>
+            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/login" className="nav-link">Login</Link>
+          </Nav>
+          <Link to="/register"><Button variant='outline-primary'>Register</Button></Link>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+    );
+    
+  }
+
 }
 
-export default Navbarx;
+export default NavBarx;
