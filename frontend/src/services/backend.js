@@ -49,3 +49,14 @@ export const getMyUserDataService = async ({ token }) => {
 
   return json.user;
 };
+
+export const getRecommendationsService = async () => {
+  const response = await fetch("http://localhost:3000/recommendations/");
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+  return json.recommendations;
+};

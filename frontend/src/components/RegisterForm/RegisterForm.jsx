@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import { FormText } from 'react-bootstrap';
 import { registerNewUser } from "../../services/backend";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Link } from 'react-router-dom';
 
 
