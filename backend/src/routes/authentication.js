@@ -20,7 +20,9 @@ import { sendError } from "../utils/response.js";
 import {
   throwInvalidFileTypeError,
   throwPasswordMatchError,
+  throwUnauthorizedError,
 } from "../utils/errors.js";
+import { token } from "morgan";
 
 const router = express.Router();
 
@@ -92,16 +94,20 @@ router.get(
 //! RUTA AGREGAR FOTO, Y CAMBIARLA
 
 const fileParser = fileUpload();
-router.post(
-  "/users/:id/photo",
+router.patch(
+  "/user/:id/photo",
   fileParser,
   authMiddleware,
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
     const { photo } = await validateAddPhotoPayload({
       photo: req.files?.photo,
-      recommendationId: req.params.recommendationId,
+      id: req.currentUser.id,
     });
+
+    if (req.currentUser.id !== Number(req.params.id)) {
+      throwUnauthorizedError();
+    }
 
     const allowedFileTypes = [".jpg", ".jpeg", ".png"];
 
@@ -111,39 +117,25 @@ router.post(
       throwInvalidFileTypeError();
     }
 
-    const id = req.currentUser.id;
+    const id = req.params.id;
 
     const userPhotoDir = path.join(PHOTOS_DIR, id.toString());
-    await fs.mkdir(userPhotoDir, { recursive: true });
 
-    const [rows] = await db.execute(
-      "SELECT photo FROM users WHERE id = ? LIMIT 1",
-      [id]
-    );
-    const currentPhoto = rows[0]?.photo;
+    const files = await fs.readdir(userPhotoDir);
 
-    console.log(currentPhoto);
-
-    if (currentPhoto) {
-      const currentPhotoPath = path.join(PHOTOS_DIR, currentPhoto);
-
-      console.log(currentPhotoPath);
-
-      try {
-        await fs.unlink(currentPhotoPath, "/");
-        console.log("Se borro la foto anterior");
-      } catch (error) {
-        console.error(`No se puedo borrar la foto por que: ${error}`);
-      }
+    for (const file of files) {
+      const filePath = path.join(userPhotoDir, file);
+      await fs.unlink(filePath);
     }
 
     const randomFileName = crypto.randomUUID();
     const newFilePath = `${randomFileName}${fileExtension}`;
     await photo.mv(path.join(userPhotoDir, newFilePath));
 
-    const URL = `${id}/${newFilePath}`;
-
-    await db.execute("UPDATE users SET photo = ? WHERE id = ?", [URL, id]);
+    await db.execute("UPDATE users SET photo = ? WHERE id = ?", [
+      newFilePath,
+      id,
+    ]);
 
     sendOKCreated(res, "Photo added successfully!");
   })
@@ -194,5 +186,7 @@ router.patch(
     sendOK(res, { message: "User updated successfully!" });
   })
 );
+
+//! DEVOLVER URL DE LA FOTO DE PERFIL
 
 export default router;
