@@ -10,7 +10,7 @@ import Register from './pages/Register/Register'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Routes, Route } from 'react-router-dom';
 import Navbarx from './components/NavBar/Navbarx';
-
+import ExpandedRecommendation from './pages/expandedRecommendation/expandedRecommendation'
 
 function App() {
   return (
@@ -25,7 +25,8 @@ function App() {
         <Route path="/editRecommendation" element={<EditRecommendation />} />
         <Route path="/recommendations" element={<Recommendations />} />
         <Route path="/register" element={<Register />} />
-        </Routes>
+        <Route path="/recommendations/:id" element={<ExpandedRecommendation />} />
+      </Routes>
     </main>
     
     
