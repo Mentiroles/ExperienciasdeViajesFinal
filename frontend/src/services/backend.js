@@ -17,7 +17,7 @@ export const registerNewUser = async ({ email, password, nickName }) => {
 };
 
 export const loginUser = async ({ email, password }) => {
-  const response = await fetch(`http://localhost:3000/login`, {
+  const response = await fetch(import.meta.env.VITE_BACKEND+"/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
     headers: {
@@ -59,4 +59,15 @@ export const getRecommendationsService = async () => {
     throw new Error(json.message);
   }
   return json.recommendations;
+};
+
+export const getCommentsService = async () => {
+  const response = await fetch("http://localhost:3000/recomendations/?/comentarios");
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+  return json.comments;
 };
