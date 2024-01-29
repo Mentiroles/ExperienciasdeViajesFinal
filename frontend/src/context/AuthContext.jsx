@@ -4,49 +4,41 @@ import { getMyUserDataService } from "../services/backend";
 
 const AuthContext = createContext({});
 
-function AuthContextProviderComponent  ({ children }){
-  const [token, setToken] = useState(localStorage.getItem('token'));
+function AuthContextProviderComponent({ children }) {
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem('token', token);
+    localStorage.setItem("token", token);
   }, [token]);
 
   useEffect(() => {
     const getMyUserData = async () => {
       try {
-        const data = await getMyUserDataService({token})
+        const data = await getMyUserDataService({ token });
         setUser(data);
-        console.log(data);
       } catch (error) {
         logout();
       }
-      
     };
-
 
     if (token) getMyUserData();
   }, [token]);
 
   const login = (token) => {
     setToken(token);
-  }
+  };
 
   const logout = () => {
-    setToken('');
+    setToken("");
     setUser(null);
-  }
-  
+  };
 
   return (
-    <AuthContext.Provider value={{ token, user, login, logout}}>
+    <AuthContext.Provider value={{ token, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-
-
-
 export { AuthContext, AuthContextProviderComponent };
-

@@ -1,31 +1,25 @@
-import LikeButton from "../../components/LikeButton/LikeButton"
-import Recommendation from "../../components/Recommendation/Recommendation"
-import Comments from "../../components/Comments/Comments"
-import CommentForm from "../../components/CommentForm/CommentForm"
-import useRecommendation from "../../hooks/useRecommendation"
-import { useLocation } from "react-router-dom"
+import useSingleRecommendation from "../../hooks/useSingleRecommendation";
 
+const ExpandedRecommendation = ({ recommendationId }) => {
+  const { recommendation, error, loading } =
+    useSingleRecommendation(recommendationId);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
-const ExpandedRecommendation = () => {
-    const { recommendationsData } = useRecommendation();
-    const { pathname } = useLocation();
-  
-    const recommendation = recommendationsData.find((recommendation) => recommendation.id === pathname.split("/")[2]);
-  
-    return (
-      <div>
-        {recommendation && (
-          <Recommendation recommendation={recommendation} key={recommendation.id}/>
-          
-        )}
-      </div>
-      
-    );
-  };
-  
+  const { title, description } = recommendation;
 
-export default ExpandedRecommendation
+  return (
+    <div>
+      <h2>{title}</h2>
+      <p>{description}</p>
+    </div>
+  );
+};
 
-
+export default ExpandedRecommendation;

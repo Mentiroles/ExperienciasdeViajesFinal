@@ -306,19 +306,6 @@ CREATE TABLE recommendations (
 );
 `);
 
-// console.log("Creando columna de categorias...");
-// await db.query(`
-// INSERT INTO recommendations (category) VALUES
-// ('Beach'),
-// ('Rural'),
-// ('Cultural'),
-// ('Nature'),
-// ('Historic'),
-// ('City'),
-// ('Gastronomy'),
-// ('Other')
-// `);
-
 console.log("Creando tabla de fotos de recomendaciones...");
 await db.query(`
 CREATE TABLE recommendationPhotos (

@@ -144,6 +144,54 @@ router.get(
   })
 );
 
+//! GET RECOMENDACION POR ID
+
+router.get(
+  "/recommendations/:id",
+  wrapWithCatch(async (req, res) => {
+    const { id } = req.params;
+
+    const [recommendation] = await db.execute(
+      `SELECT * FROM recommendations WHERE id = ?`,
+      [id]
+    );
+
+    if (recommendation.length === 0) {
+      throw new Error("Recommendation not found");
+    }
+
+    const [photoRows] = await db.execute(
+      `SELECT url FROM recommendationPhotos WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const photo = photoRows.map((row) => row.url);
+
+    const [comments] = await db.execute(
+      `SELECT * FROM comments WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const [likes] = await db.execute(
+      `SELECT userId FROM recommendationLikes WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const [user] = await db.execute(
+      `SELECT id, nickName, email FROM users WHERE id = ?`,
+      [recommendation[0].userId]
+    );
+
+    sendOK(res, {
+      recommendation: recommendation[0],
+      photos: photo,
+      comments: comments,
+      likes: likes,
+      user: user[0],
+    });
+  })
+);
+
 router.use(authMiddleware);
 router.use(loggedInGuard);
 
