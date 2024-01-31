@@ -182,12 +182,47 @@ router.get(
       [recommendation[0].userId]
     );
 
+    const [location] = await db.execute(
+      `SELECT id, country as name FROM locations WHERE id = ?`,
+      [recommendation[0].locationId]
+    );
+
     sendOK(res, {
       recommendation: recommendation[0],
       photos: photo,
       comments: comments,
       likes: likes,
       user: user[0],
+      location: location[0],
+    });
+  })
+);
+
+//! GET IMAGEN
+
+router.get(
+  "/recommendations/:id/image",
+  wrapWithCatch(async (req, res) => {
+    const id = req.params.id;
+
+    const [[recommendation]] = await db.execute(
+      `SELECT * FROM recommendations WHERE id = ?`,
+      [id]
+    );
+
+    if (!recommendation) {
+      throw new Error("Recommendation not found");
+    }
+
+    const [photoRows] = await db.execute(
+      `SELECT url FROM recommendationPhotos WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const photo = photoRows.map((row) => row.url);
+
+    sendOK(res, {
+      photos: photo,
     });
   })
 );
@@ -200,7 +235,6 @@ router.use(loggedInGuard);
 router.post(
   "/recommendations",
   wrapWithCatch(async (req, res) => {
-    console.log(req.body);
     const { title, category, locationId, description, lean_in } =
       await validateCreateRecommendationPayload(req.body);
 
@@ -220,9 +254,9 @@ router.post(
 // ! EDITAR RECOMENDACIONES
 
 router.patch(
-  "/recommendations/:recommendationId",
+  "/edit-recommendations/:id",
   wrapWithCatch(async (req, res) => {
-    const recommendationId = req.params.recommendationId;
+    const recommendationId = req.params.id;
     const { title, category, locationId, description } =
       await validateEditRecommendationPayload({
         ...req.body,
@@ -262,7 +296,7 @@ router.post(
 
     await image.mv(path.join(PHOTOS_DIR, newFilePath));
 
-    const URL = `photos/${newFilePath}`;
+    const URL = `${newFilePath}`;
 
     const [{ insertImage }] = await db.execute(
       `INSERT INTO recommendationPhotos (recommendationId, url)
@@ -277,27 +311,27 @@ router.post(
 // ! DELETE RECOMENDACIONES
 
 router.delete(
-  "/recommendations/:recommendationId",
+  "/delete-recommendations/:id",
   wrapWithCatch(async (req, res) => {
     const { recommendationId } = await validateDeleteRecommendationPayload({
-      recommendationId: req.params.recommendationId,
+      recommendationId: req.params.id,
       userId: req.currentUser.id,
     });
 
-    const [photos] = await db.execute(
-      `SELECT * FROM recommendationPhotos WHERE recommendationId = ?`,
-      [recommendationId]
-    );
+    // const [photos] = await db.execute(
+    //   `SELECT * FROM recommendationPhotos WHERE recommendationId = ?`,
+    //   [recommendationId]
+    // );
 
-    const deletePhotosPromises = photos.map(async (photo) => {
-      await fs.unlink(path.join(PHOTOS_DIR, path.basename(photo.url)));
-    });
-    await Promise.all(deletePhotosPromises);
+    // const deletePhotosPromises = photos.map(async (photo) => {
+    //   await fs.unlink(path.join(PHOTOS_DIR, path.basename(photo.url)));
+    // });
+    // await Promise.all(deletePhotosPromises);
 
-    await db.execute(
-      `DELETE FROM recommendationPhotos WHERE recommendationId = ?`,
-      [recommendationId]
-    );
+    // await db.execute(
+    //   `DELETE FROM recommendationPhotos WHERE recommendationId = ?`,
+    //   [recommendationId]
+    // );
 
     await db.execute(`DELETE FROM recommendations WHERE id = ?`, [
       recommendationId,

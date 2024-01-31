@@ -1,11 +1,11 @@
-import  Profile  from "../../components/Profile/Profile"
+import Profile from "../../components/Profile/Profile";
 
 function UserProfile() {
-    return (
-        <>
-         <Profile/>
-        </>
-    )
+  return (
+    <>
+      <Profile />
+    </>
+  );
 }
 
-export default UserProfile
+export default UserProfile;

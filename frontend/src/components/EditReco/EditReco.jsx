@@ -1,40 +1,47 @@
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useState } from "react";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { postCreateRecommendationService } from "../../services/backend";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { editRecommendationService } from "../../services/backend";
+import Button from "react-bootstrap/Button";
+import useSingleRecommendation from "../../hooks/useSingleRecommendation";
 import { useNavigate } from "react-router-dom";
-function RecommendationForm() {
+const EditReco = ({ recommendationId }) => {
+  const { recommendation, error, loading } =
+    useSingleRecommendation(recommendationId);
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const { token } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [country, setCountry] = useState("");
-  const [lean_in, setLean_in] = useState("");
-  //   const [image, setImage] = useState("");
+  const [locationId, setLocationId] = useState("");
   const [setError] = useState("");
 
   if (!user) {
     return <div>You must be logged in</div>;
   }
 
-  const handleForm = async (e) => {
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const handleEdit = async (e) => {
     e.preventDefault();
 
     try {
-      await postCreateRecommendationService(
+      await editRecommendationService(
         title,
         category,
         description,
-        country,
-        lean_in,
+        locationId,
         token
       );
-      navigate("/recommendations");
+      navigate("/recommendations/" + recommendation.recommendation.id);
     } catch (error) {
       setError(error);
     }
@@ -44,10 +51,10 @@ function RecommendationForm() {
     <>
       <Form className="w-75 mx-auto mt-5">
         <Form.Group className="mb-3">
-          <Form.Label className="mb-3">Create Title</Form.Label>
+          <Form.Label className="mb-3">Edit title</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter new title"
+            placeholder={recommendation.recommendation.title}
             required
             className="mb-3"
             onChange={(e) => setTitle(e.target.value)}
@@ -55,9 +62,6 @@ function RecommendationForm() {
             name="title"
             id="title"
           />
-          <Form.Text className="text-muted mb-3">
-            Try to be as descriptive as possible.
-          </Form.Text>
         </Form.Group>
         <Form.Group>
           <Form.Select
@@ -76,59 +80,41 @@ function RecommendationForm() {
             as="textarea"
             rows={3}
             className="mb-3"
-            placeholder="Enter new description"
+            placeholder={recommendation.recommendation.description}
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             name="description"
             id="description"
           />
-          <Form.Label className="text-muted mb-3">
-            Tell us about your trip
-          </Form.Label>
         </Form.Group>
         <Form.Group>
-          <Form.Label className="mb-3">Choose the country</Form.Label>
+          <Form.Label className="mb-3">Edit the country</Form.Label>
 
           <Form.Control
             type="text"
-            placeholder="Enter the country"
+            placeholder={recommendation.location.name}
             required
             className="mb-3"
-            onChange={(e) => setCountry(e.target.value)}
-            value={country}
-            name="country"
-            id="country"
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label className="text-muted mb-3">Hashtags</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            className="mb-3"
-            placeholder="Enter hashtags"
-            onChange={(e) => setLean_in(e.target.value)}
-            value={lean_in}
-            name="lean_in"
-            id="lean_in"
+            onChange={(e) => setLocationId(e.target.value)}
+            value={locationId}
+            name="locationId"
+            id="locationId"
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Upload your favorite photos from the trip!</Form.Label>
+          <Form.Label>Upload more photos from the trip!</Form.Label>
           <Form.Control type="file" />
         </Form.Group>
-        <Link
-          to="/recommendations"
-          onClick={handleForm}>
+        <Link onClick={handleEdit}>
           <Button
             variant="primary"
             type="submit">
-            Create recommendation!
+            Edit!
           </Button>
         </Link>
       </Form>
     </>
   );
-}
+};
 
-export default RecommendationForm;
+export default EditReco;
