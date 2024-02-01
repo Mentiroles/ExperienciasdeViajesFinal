@@ -1,11 +1,11 @@
-
+import EditReco from "../../components/EditReco/EditReco";
 
 function EditRecommendation() {
-    return (
-        <>
-         <h1>EditRecommendation</h1>
-        </>
-    )
+  return (
+    <>
+      <EditReco />
+    </>
+  );
 }
 
-export default EditRecommendation
+export default EditRecommendation;

@@ -1,11 +1,5 @@
-
-
 function CommentForm() {
-    return (
-        <>
-         hola
-        </>
-    )
+  return <>hola</>;
 }
 
-export default CommentForm
+export default CommentForm;

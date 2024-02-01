@@ -163,7 +163,7 @@ export async function validateDeleteRecommendationPayload(payload) {
   };
 }
 
-async function validateRecommendationAndUser(recommendationId, userId) {
+export async function validateRecommendationAndUser(recommendationId, userId) {
   recommendationId = Number(recommendationId);
   if (!recommendationId) {
     throwRecommendationIdIsRequiredError();

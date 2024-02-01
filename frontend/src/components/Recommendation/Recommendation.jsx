@@ -42,11 +42,13 @@ const Recommendation = ({ recommendation }) => {
       <div className="d-flex justify-content-center text-center mt-3 mb-3">
         <Card.Text className="mb-1 h5"> {user} </Card.Text>
       </div>
-      <Button
-        onClick={goToRecommendation}
-        variant="primary">
-        Ver
-      </Button>
+      <div className="d-flex justify-content-center">
+        <Button
+          onClick={goToRecommendation}
+          variant="primary">
+          Ver
+        </Button>
+      </div>
     </article>
   );
 };

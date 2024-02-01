@@ -295,7 +295,7 @@ await db.query(`
 CREATE TABLE recommendations (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    category VARCHAR(100),
+    category VARCHAR(100) NULL,
     locationId INT UNSIGNED NOT NULL,
     lean_in VARCHAR(100) NULL,
     userId INT UNSIGNED NOT NULL,

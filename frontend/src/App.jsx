@@ -9,7 +9,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route } from "react-router-dom";
 import Navbarx from "./components/NavBar/Navbarx";
 import ExpandedRecommendation from "./pages/expandedRecommendation/ExpandedRecommendation";
-
+import Footer from "./components/Footer/Footer";
+import CreateRecommendation from "./pages/createRecommendation/CreateRecommendation";
+import EditRecommendation from "./pages/editRecommendation/EditRecommendation";
 function App() {
   return (
     <main className="App">
@@ -43,7 +45,16 @@ function App() {
           path="/recommendations/:id"
           element={<ExpandedRecommendation />}
         />
+        <Route
+          path="/create-recommendation"
+          element={<CreateRecommendation />}
+        />
+        <Route
+          path="/edit-recommendations/:id"
+          element={<EditRecommendation />}
+        />
       </Routes>
+      <Footer />
     </main>
   );
 }

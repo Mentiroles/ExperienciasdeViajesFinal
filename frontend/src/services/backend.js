@@ -78,7 +78,36 @@ export const getRecommendationByIdService = async () => {
 
   console.log(json);
 
-  return json.recommendation;
+  return json;
+};
+
+export const editRecommendationService = async (
+  title,
+  category,
+  description,
+  locationId,
+  token
+) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/edit-recommendations/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify({ title, category, description, locationId }),
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
 };
 
 export const getCommentsService = async () => {
@@ -92,4 +121,55 @@ export const getCommentsService = async () => {
     throw new Error(json.message);
   }
   return json.comments;
+};
+
+export const postCreateRecommendationService = async (
+  title,
+  category,
+  description,
+  country,
+  lean_in,
+  token
+) => {
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + "/recommendations",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      body: JSON.stringify({ title, category, description, country, lean_in }),
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json.data;
+};
+
+export const deleteRecommendationService = async (token) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/delete-recommendations/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
 };
