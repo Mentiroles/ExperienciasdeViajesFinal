@@ -12,6 +12,7 @@ import ExpandedRecommendation from "./pages/expandedRecommendation/ExpandedRecom
 import Footer from "./components/Footer/Footer";
 import CreateRecommendation from "./pages/createRecommendation/CreateRecommendation";
 import EditRecommendation from "./pages/editRecommendation/EditRecommendation";
+import EditProfile from "./pages/editProfile/EditProfile";
 function App() {
   return (
     <main className="App">
@@ -28,6 +29,10 @@ function App() {
         <Route
           path="/user"
           element={<UserProfile />}
+        />
+        <Route
+          path="/user/:id"
+          element={<EditProfile />}
         />
         <Route
           path="/login"

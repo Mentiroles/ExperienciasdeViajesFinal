@@ -1,47 +1,55 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Form from "react-bootstrap/Form";
-import { Link } from "react-router-dom";
-import { useState } from "react";
 import { editRecommendationService } from "../../services/backend";
 import Button from "react-bootstrap/Button";
-import useSingleRecommendation from "../../hooks/useSingleRecommendation";
 import { useNavigate } from "react-router-dom";
-const EditReco = ({ recommendationId }) => {
-  const { recommendation, error, loading } =
-    useSingleRecommendation(recommendationId);
+import { getLocationsService } from "../../services/backend";
+
+const EditReco = () => {
   const navigate = useNavigate();
-  const { user, token } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [locationId, setLocationId] = useState("");
-  const [setError] = useState("");
+  const [locations, setLocations] = useState([]);
+  const [country, setCountry] = useState();
+  const [imageFile, setImageFile] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadingLocations = async () => {
+      try {
+        const data = await getLocationsService();
+
+        setLocations(data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadingLocations();
+  }, []);
 
   if (!user) {
     return <div>You must be logged in</div>;
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
   const handleEdit = async (e) => {
     e.preventDefault();
-
+    if (!imageFile) {
+      return;
+    }
+    let formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("title", title);
+    formData.append("category", category);
+    formData.append("description", description);
+    formData.append("country", country);
     try {
-      await editRecommendationService(
-        title,
-        category,
-        description,
-        locationId,
-        token
-      );
-      navigate("/recommendations/" + recommendation.recommendation.id);
+      await editRecommendationService(formData, token);
+      navigate("/recommendations");
     } catch (error) {
       setError(error);
     }
@@ -49,12 +57,13 @@ const EditReco = ({ recommendationId }) => {
 
   return (
     <>
-      <Form className="w-75 mx-auto mt-5">
+      <Form
+        className="w-75 mx-auto mt-5 "
+        onSubmit={handleEdit}>
         <Form.Group className="mb-3">
           <Form.Label className="mb-3">Edit title</Form.Label>
           <Form.Control
             type="text"
-            placeholder={recommendation.recommendation.title}
             required
             className="mb-3"
             onChange={(e) => setTitle(e.target.value)}
@@ -80,7 +89,6 @@ const EditReco = ({ recommendationId }) => {
             as="textarea"
             rows={3}
             className="mb-3"
-            placeholder={recommendation.recommendation.description}
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             name="description"
@@ -88,30 +96,35 @@ const EditReco = ({ recommendationId }) => {
           />
         </Form.Group>
         <Form.Group>
-          <Form.Label className="mb-3">Edit the country</Form.Label>
-
-          <Form.Control
-            type="text"
-            placeholder={recommendation.location.name}
+          <Form.Label className="mb-3">Choose the country</Form.Label>
+          <Form.Select
             required
-            className="mb-3"
-            onChange={(e) => setLocationId(e.target.value)}
-            value={locationId}
-            name="locationId"
-            id="locationId"
-          />
+            name="country"
+            id="country"
+            onChange={(e) => setCountry(e.target.value)}>
+            {locations.map((pais) => (
+              <option
+                key={pais.id}
+                value={pais.id}>
+                {pais.country}
+              </option>
+            ))}
+          </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Upload more photos from the trip!</Form.Label>
-          <Form.Control type="file" />
+          <Form.Label>Upload your favorite photos from the trip!</Form.Label>
+          <Form.Control
+            type="file"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
         </Form.Group>
-        <Link onClick={handleEdit}>
-          <Button
-            variant="primary"
-            type="submit">
-            Edit!
-          </Button>
-        </Link>
+        {error ? <p>{error.message}</p> : null}
+        <Button
+          variant="primary"
+          type="submit"
+          className="mt-3">
+          Edit!
+        </Button>
       </Form>
     </>
   );

@@ -12,28 +12,28 @@ import {
 
 const router = express.Router();
 router.use(authMiddleware);
-router.use(loggedInGuard);
 
 // ! CREAR COMENTARIOS
 
 router.post(
-  "/recommendations/:recommendationId/comentarios",
+  "/recommendations/:id/comments",
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
-    console.log(req.body);
-    const { recommendationId, message } = await validateCreateCommentPayload({
+    const recommendationId = req.params.id;
+    const { message } = await validateCreateCommentPayload({
       message: req.body.message,
-      recommendationId: req.params.recommendationId,
+      recommendationId: recommendationId,
     });
 
     const userId = req.currentUser.id;
+    const nickName = req.currentUser.nickName;
 
     const [{ insertId }] = await db.execute(
-      `INSERT INTO comments(message, recommendationId, userId) VALUES(?,?,?)`,
-      [message, recommendationId, userId]
+      `INSERT INTO comments(message, recommendationId, userId, nickName) VALUES(?,?,?,?)`,
+      [message, recommendationId, userId, nickName]
     );
 
-    sendOKCreated(res, insertId);
+    sendOKCreated(res, insertId, message);
   })
 );
 

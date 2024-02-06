@@ -1,11 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { postCreateRecommendationService } from "../../services/backend";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { getLocationsService } from "../../services/backend";
+
 function RecommendationForm() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
@@ -13,10 +13,25 @@ function RecommendationForm() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [country, setCountry] = useState("");
+  const [locations, setLocations] = useState([]);
   const [lean_in, setLean_in] = useState("");
-  //   const [image, setImage] = useState("");
-  const [setError] = useState("");
+  const [country, setCountry] = useState();
+  const [imageFile, setImageFile] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadingLocations = async () => {
+      try {
+        const data = await getLocationsService();
+
+        setLocations(data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadingLocations();
+  }, []);
 
   if (!user) {
     return <div>You must be logged in</div>;
@@ -24,16 +39,18 @@ function RecommendationForm() {
 
   const handleForm = async (e) => {
     e.preventDefault();
-
+    if (!imageFile) {
+      return;
+    }
+    let formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("title", title);
+    formData.append("category", category);
+    formData.append("description", description);
+    formData.append("country", country);
+    formData.append("lean_in", lean_in);
     try {
-      await postCreateRecommendationService(
-        title,
-        category,
-        description,
-        country,
-        lean_in,
-        token
-      );
+      await postCreateRecommendationService(formData, token);
       navigate("/recommendations");
     } catch (error) {
       setError(error);
@@ -42,7 +59,9 @@ function RecommendationForm() {
 
   return (
     <>
-      <Form className="w-75 mx-auto mt-5">
+      <Form
+        className="w-75 mx-auto mt-5"
+        onSubmit={handleForm}>
         <Form.Group className="mb-3">
           <Form.Label className="mb-3">Create Title</Form.Label>
           <Form.Control
@@ -88,17 +107,19 @@ function RecommendationForm() {
         </Form.Group>
         <Form.Group>
           <Form.Label className="mb-3">Choose the country</Form.Label>
-
-          <Form.Control
-            type="text"
-            placeholder="Enter the country"
+          <Form.Select
             required
-            className="mb-3"
-            onChange={(e) => setCountry(e.target.value)}
-            value={country}
             name="country"
             id="country"
-          />
+            onChange={(e) => setCountry(e.target.value)}>
+            {locations.map((pais) => (
+              <option
+                key={pais.id}
+                value={pais.id}>
+                {pais.country}
+              </option>
+            ))}
+          </Form.Select>
         </Form.Group>
         <Form.Group>
           <Form.Label className="text-muted mb-3">Hashtags</Form.Label>
@@ -115,17 +136,17 @@ function RecommendationForm() {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Upload your favorite photos from the trip!</Form.Label>
-          <Form.Control type="file" />
+          <Form.Control
+            type="file"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
         </Form.Group>
-        <Link
-          to="/recommendations"
-          onClick={handleForm}>
-          <Button
-            variant="primary"
-            type="submit">
-            Create recommendation!
-          </Button>
-        </Link>
+        {error ? <p>{error}</p> : null}
+        <Button
+          variant="primary"
+          type="submit">
+          Create recommendation!
+        </Button>
       </Form>
     </>
   );

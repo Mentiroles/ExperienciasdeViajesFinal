@@ -21,6 +21,7 @@ import {
 } from "../utils/errors.js";
 
 const router = express.Router();
+router.use(authMiddleware);
 
 // ! GET RECOMENDACIONES POR CATEGORIA, UBICACIÓN, ID O TODAS ORDENADAS POR LIKES
 
@@ -188,13 +189,25 @@ router.get(
     );
 
     sendOK(res, {
-      recommendation: recommendation[0],
-      photos: photo,
-      comments: comments,
-      likes: likes,
-      user: user[0],
-      location: location[0],
+      recommendation: {
+        ...recommendation[0],
+        photos: photo,
+        comments: comments,
+        likes: likes,
+        user: user[0],
+        location: location[0],
+      },
     });
+  })
+);
+
+//! GET TODOS LOS PAISES
+
+router.get(
+  "/locations",
+  wrapWithCatch(async (req, res) => {
+    const locations = await db.execute(`SELECT * FROM locations`);
+    sendOK(res, locations);
   })
 );
 
@@ -227,63 +240,44 @@ router.get(
   })
 );
 
-router.use(authMiddleware);
-router.use(loggedInGuard);
+//! GET POSTS
+
+router.get("/users/:userId/posts-count", async (req, res) => {
+  const userId = req.params.userId;
+
+  const [[count]] = await db.execute(
+    `SELECT COUNT(*) AS count FROM recommendations WHERE userId = ?`,
+    [userId]
+  );
+
+  sendOK(res, { count: count.count });
+});
 
 // ! CREAR RECOMENDACIONES
 
+const fileParser = fileUpload();
+
 router.post(
-  "/recommendations",
+  "/create-recommendation",
+  loggedInGuard,
+  fileParser,
   wrapWithCatch(async (req, res) => {
-    const { title, category, locationId, description, lean_in } =
+    console.log("Location:", req.body.country);
+    const { title, category, country, description, lean_in } =
       await validateCreateRecommendationPayload(req.body);
 
     const userId = req.currentUser.id;
 
-    //? LA CATEGORIA DEBERA SELECCIONARSE, NO PUEDE PONER UNA NUEVA
-
     const [{ insertId }] = await db.execute(
       `INSERT INTO recommendations(title, category, locationId, userId, description,lean_in) VALUES(?,?,?,?,?,?)`,
-      [title, category, locationId, userId, description, lean_in]
+      [title, category, country, userId, description, lean_in]
     );
 
-    sendOKCreated(res, insertId);
-  })
-);
-
-// ! EDITAR RECOMENDACIONES
-
-router.patch(
-  "/edit-recommendations/:id",
-  wrapWithCatch(async (req, res) => {
-    const recommendationId = req.params.id;
-    const { title, category, locationId, description } =
-      await validateEditRecommendationPayload({
-        ...req.body,
-        recommendationId: recommendationId,
-        userId: req.currentUser.id,
-      });
-
-    await db.execute(
-      `UPDATE recommendations SET title = ?, category = ?, locationId = ?,  description = ? WHERE id = ?`,
-      [title, category, locationId, description, recommendationId]
-    );
-
-    sendOK(res);
-  })
-);
-
-// ! AGREGAR IMAGENES A RECOMENDACIONES
-
-const fileParser = fileUpload();
-router.post(
-  "/recommendations/:recommendationId/image",
-  fileParser,
-  wrapWithCatch(async (req, res) => {
-    const { image, recommendationId } = await validateAddImagePayload({
+    const recommendationId = insertId;
+    const { image } = await validateAddImagePayload({
       image: req.files?.image,
-      recommendationId: req.params.recommendationId,
-      userId: req.currentUser.id,
+      recommendationId: recommendationId,
+      userId: userId,
     });
 
     await fs.mkdir(PHOTOS_DIR, { recursive: true });
@@ -304,34 +298,125 @@ router.post(
       [recommendationId, URL]
     );
 
-    sendOKCreated(res, insertImage);
+    sendOKCreated(res, recommendationId, insertId, insertImage);
   })
 );
+
+// ! EDITAR RECOMENDACIONES
+
+router.patch(
+  "/edit-recommendations/:recommendationId",
+  loggedInGuard,
+  fileParser,
+  wrapWithCatch(async (req, res) => {
+    const recommendationId = req.params.recommendationId;
+    const { title, category, country, description } =
+      await validateEditRecommendationPayload({
+        ...req.body,
+        recommendationId: recommendationId,
+        userId: req.currentUser.id,
+      });
+
+    await db.execute(
+      `UPDATE recommendations SET title = ?, category = ?, locationId = ?, description = ? WHERE id = ?`,
+      [title, category, country, description, recommendationId]
+    );
+
+    const { image } = await validateAddImagePayload({
+      image: req.files?.image,
+      recommendationId: recommendationId,
+      userId: req.currentUser.id,
+    });
+
+    await fs.mkdir(PHOTOS_DIR, { recursive: true });
+
+    const fileExtension = path.extname(image.name);
+
+    const randomFileName = crypto.randomUUID();
+
+    const newFilePath = `${randomFileName}${fileExtension}`;
+
+    await image.mv(path.join(PHOTOS_DIR, newFilePath));
+
+    const URL = `${newFilePath}`;
+
+    const [{ insertImage }] = await db.execute(
+      `INSERT INTO recommendationPhotos (recommendationId, url) VALUES(?,?)`,
+      [recommendationId, URL]
+    );
+
+    sendOK(res, {
+      title,
+      category,
+      country,
+      description,
+      insertImage,
+    });
+  })
+);
+
+// ! AGREGAR IMAGENES A RECOMENDACIONES
+
+// const fileParser = fileUpload();
+// router.post(
+//   "/recommendations/:id/image",
+//   loggedInGuard,
+//   fileParser,
+//   wrapWithCatch(async (req, res) => {
+//     const recommendationId = req.params.id;
+//     const { image } = await validateAddImagePayload({
+//       image: req.files?.image,
+//       recommendationId: recommendationId,
+//       userId: req.currentUser.id,
+//     });
+
+//     await fs.mkdir(PHOTOS_DIR, { recursive: true });
+
+//     const fileExtension = path.extname(image.name);
+
+//     const randomFileName = crypto.randomUUID();
+
+//     const newFilePath = `${randomFileName}${fileExtension}`;
+
+//     await image.mv(path.join(PHOTOS_DIR, newFilePath));
+
+//     const URL = `${newFilePath}`;
+
+//     const [{ insertImage }] = await db.execute(
+//       `INSERT INTO recommendationPhotos (recommendationId, url)
+//     VALUES(?,?)`,
+//       [recommendationId, URL]
+//     );
+
+//     sendOKCreated(res, insertImage);
+//   })
+// );
 
 // ! DELETE RECOMENDACIONES
 
 router.delete(
   "/delete-recommendations/:id",
+  loggedInGuard,
   wrapWithCatch(async (req, res) => {
     const { recommendationId } = await validateDeleteRecommendationPayload({
       recommendationId: req.params.id,
       userId: req.currentUser.id,
     });
 
-    // const [photos] = await db.execute(
-    //   `SELECT * FROM recommendationPhotos WHERE recommendationId = ?`,
-    //   [recommendationId]
-    // );
+    const [photos] = await db.execute(
+      `SELECT * FROM recommendationPhotos WHERE recommendationId = ?`,
+      [recommendationId]
+    );
 
-    // const deletePhotosPromises = photos.map(async (photo) => {
-    //   await fs.unlink(path.join(PHOTOS_DIR, path.basename(photo.url)));
-    // });
-    // await Promise.all(deletePhotosPromises);
+    const deletePhotosPromises = photos.map(async (photo) => {
+      await fs.unlink(path.join(PHOTOS_DIR, path.basename(photo.url)));
+    });
+    await Promise.all(deletePhotosPromises);
 
-    // await db.execute(
-    //   `DELETE FROM recommendationPhotos WHERE recommendationId = ?`,
-    //   [recommendationId]
-    // );
+    await db.execute(
+      `DELETE FROM recommendationPhotos WHERE recommendationId = ?`,
+      [recommendationId]
+    );
 
     await db.execute(`DELETE FROM recommendations WHERE id = ?`, [
       recommendationId,
@@ -359,7 +444,6 @@ router.post(
       throwExistingLikeError();
     }
 
-    // Insertar el nuevo like en la tabla
     await db.execute(
       `INSERT INTO recommendationLikes (userId, recommendationId) VALUES(?,?)`,
       [currentUserId, recommendationId]
@@ -371,6 +455,7 @@ router.post(
 
 router.delete(
   "/recommendations/:recommendationId/like",
+  loggedInGuard,
   wrapWithCatch(async (req, res) => {
     const { recommendationId } = req.params;
     const userId = req.currentUser.id;
@@ -385,6 +470,22 @@ router.delete(
     } else {
       throwLikeNotFoundError();
     }
+  })
+);
+
+router.get(
+  "/recommendations/:recommendationId/like-count",
+  wrapWithCatch(async (req, res) => {
+    const { recommendationId } = req.params;
+
+    const [likeCount] = await db.execute(
+      `SELECT 
+        (SELECT COUNT(*) FROM recommendationLikes WHERE recommendationId = ?) AS likeCount,
+        (SELECT COUNT(*) FROM recommendationLikes WHERE recommendationId = ?) AS dislikeCount`,
+      [recommendationId, recommendationId]
+    );
+
+    res.json(likeCount);
   })
 );
 export default router;

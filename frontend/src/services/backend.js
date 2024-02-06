@@ -1,3 +1,4 @@
+import axios from "axios";
 export const registerNewUser = async ({ email, password, nickName }) => {
   const response = await fetch(import.meta.env.VITE_BACKEND + "/register", {
     method: "POST",
@@ -76,70 +77,81 @@ export const getRecommendationByIdService = async () => {
     throw new Error(json.message);
   }
 
-  console.log(json);
-
   return json;
 };
 
-export const editRecommendationService = async (
-  title,
-  category,
-  description,
-  locationId,
-  token
+export const editRecommendationService = async (formData, token) => {
+  const recommendationId = window.location.pathname.split("/").pop();
+  const url =
+    import.meta.env.VITE_BACKEND +
+    "/edit-recommendations/" +
+    `${recommendationId}`;
+  const options = {
+    method: "PATCH",
+    headers: {
+      Authorization: token,
+    },
+    body: formData,
+  };
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+  return response.json();
+};
+
+export const editProfileService = async (formData, token) => {
+  const id = window.location.pathname.split("/").pop();
+  const url = import.meta.env.VITE_BACKEND + "/user/" + `${id}`;
+  const options = {
+    method: "PATCH",
+    headers: {
+      Authorization: token,
+    },
+    body: formData,
+  };
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+  return response.json();
+};
+
+export const postCommentsService = async (
+  token,
+  message,
+  userId,
+  nickName,
+  recommendationId
 ) => {
   const id = window.location.pathname.split("/").pop();
   const response = await fetch(
-    import.meta.env.VITE_BACKEND + `/edit-recommendations/${id}`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({ title, category, description, locationId }),
-    }
-  );
-
-  const json = await response.json();
-
-  if (!response.ok) {
-    throw new Error(json.message);
-  }
-
-  return json;
-};
-
-export const getCommentsService = async () => {
-  const response = await fetch(
-    "http://localhost:3000/recomendations/?/comentarios"
-  );
-
-  const json = await response.json();
-
-  if (!response.ok) {
-    throw new Error(json.message);
-  }
-  return json.comments;
-};
-
-export const postCreateRecommendationService = async (
-  title,
-  category,
-  description,
-  country,
-  lean_in,
-  token
-) => {
-  const response = await fetch(
-    import.meta.env.VITE_BACKEND + "/recommendations",
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}/comments`,
     {
       method: "POST",
       headers: {
+        Authorization: token,
         "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message, userId, recommendationId, nickName }),
+    }
+  );
+  return response.json();
+};
+
+export const postCreateRecommendationService = async (formData, token) => {
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + "/create-recommendation",
+    {
+      method: "POST",
+      headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ title, category, description, country, lean_in }),
+      body: formData,
     }
   );
 
@@ -172,4 +184,45 @@ export const deleteRecommendationService = async (token) => {
   }
 
   return json;
+};
+
+export const getLocationsService = async () => {
+  const response = await fetch(import.meta.env.VITE_BACKEND + "/locations");
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+  return json;
+};
+
+export async function getRecommendationsCountService(userId) {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND}/users/${userId}/posts-count`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch recommendations count");
+    }
+    const data = await response.json();
+    return data.count;
+  } catch (error) {
+    console.error("Error fetching recommendations count:", error);
+    throw error;
+  }
+}
+
+export const getLikeDislikeCount = async (recommendationId) => {
+  try {
+    const response = await fetch(
+      `${
+        import.meta.env.VITE_BACKEND
+      }/recommendations/${recommendationId}/like-count`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching like/dislike count:", error);
+    return { likeCount: 0, dislikeCount: 0 };
+  }
 };

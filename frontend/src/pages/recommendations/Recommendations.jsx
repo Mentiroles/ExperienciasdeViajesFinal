@@ -1,32 +1,28 @@
 import Recommendation from "../../components/Recommendation/Recommendation";
 import useRecommendation from "../../hooks/useRecommendation";
-import { Link } from "react-router-dom";
+import "./Recommendations.css";
+
 const Recommendations = () => {
   const { recommendationsData } = useRecommendation();
 
   if (!recommendationsData) {
     return <div>No recommendations available.</div>;
   }
-
   return (
     <>
       <section>
-        <h1>Recomendaciones</h1>
-        <Link to="/create-recommendation">
-          <button
-            type="button"
-            className="btn btn-primary">
-            Crear recomendacion
-          </button>
-        </Link>
-        <ol>
+        <h2 className="text-center mt-5 mb-5 text-primary">Recommendations</h2>
+        <div
+          className="recommendation-list"
+          style={{ marginTop: "-100px" }}>
           {recommendationsData.map((recommendation) => (
             <Recommendation
               recommendation={recommendation}
               key={recommendation.id}
+              className="recommendation"
             />
           ))}
-        </ol>
+        </div>
       </section>
     </>
   );

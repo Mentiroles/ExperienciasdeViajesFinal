@@ -23,7 +23,7 @@ export async function validateCreateRecommendationPayload(payload) {
   const schema = joi.object({
     title: joi.string().max(100).required(),
     category: joi.string().max(100).required(),
-    country: joi.string().max(100).required(),
+    country: joi.number().required(),
     description: joi.string().min(8).max(250).required(),
     lean_in: joi.string().max(50),
   });
@@ -48,25 +48,14 @@ export async function validateCreateRecommendationPayload(payload) {
     throwCategoryIsRequiredError();
   }
 
-  const locationId = await getLocationIdByCountry(country);
-
   return {
     title,
     category,
-    locationId,
+    country,
     description,
     existingRecommendation,
     lean_in,
   };
-}
-
-function validateDescription(description) {
-  description = description.trim();
-
-  if (!description) {
-    throwDescriptionIsRequiredError();
-  }
-  return description;
 }
 
 async function checkIfRecommendationExists(description) {
@@ -93,24 +82,23 @@ export async function getLocationIdByCountry(country) {
 }
 
 export async function validateEditRecommendationPayload(payload) {
-  const title = payload.title;
-  const category = payload.category;
+  const title = payload.title && payload.title.trim();
+  const category = payload.category && payload.category.trim();
+  const country = payload.country;
   const description = validateDescription(payload.description);
-  const locationId = await getLocationIdByCountry(payload.locationId);
 
   const schema = joi.object({
     title: joi.string().max(100).required(),
     category: joi.string().max(100).required(),
-
+    country: joi.number().required(),
     description: joi.string().min(8).max(250).required(),
-    locationId: joi.number().required(),
   });
 
   const { error } = schema.validate({
     title,
     category,
+    country,
     description,
-    locationId,
   });
 
   if (error) {
@@ -125,11 +113,21 @@ export async function validateEditRecommendationPayload(payload) {
   return {
     title,
     category,
-    locationId,
+    country,
     description,
     recommendationId,
     userId,
   };
+}
+
+function validateDescription(description) {
+  console.log("description: ", description);
+  description = description.trim();
+
+  if (!description) {
+    throwDescriptionIsRequiredError();
+  }
+  return description;
 }
 
 export async function validateAddImagePayload(payload) {
