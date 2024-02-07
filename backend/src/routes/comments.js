@@ -27,10 +27,11 @@ router.post(
 
     const userId = req.currentUser.id;
     const nickName = req.currentUser.nickName;
+    const profilePhoto = req.currentUser.photo;
 
     const [{ insertId }] = await db.execute(
-      `INSERT INTO comments(message, recommendationId, userId, nickName) VALUES(?,?,?,?)`,
-      [message, recommendationId, userId, nickName]
+      `INSERT INTO comments(message, recommendationId, userId, nickName, profilePhoto) VALUES(?,?,?,?,?)`,
+      [message, recommendationId, userId, nickName, profilePhoto]
     );
 
     sendOKCreated(res, insertId, message);

@@ -125,6 +125,7 @@ export const postCommentsService = async (
   message,
   userId,
   nickName,
+  profilePhoto,
   recommendationId
 ) => {
   const id = window.location.pathname.split("/").pop();
@@ -136,7 +137,13 @@ export const postCommentsService = async (
         Authorization: token,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message, userId, recommendationId, nickName }),
+      body: JSON.stringify({
+        message,
+        userId,
+        recommendationId,
+        nickName,
+        profilePhoto,
+      }),
     }
   );
   return response.json();

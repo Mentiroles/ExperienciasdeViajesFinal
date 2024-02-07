@@ -27,7 +27,8 @@ const Comments = ({ recommendationId }) => {
         message,
         user.id,
         user.nickName,
-        recommendation.recommendation.id
+        recommendation.recommendation.id,
+        user.photo
       );
       window.location.reload();
     } catch (error) {
@@ -59,7 +60,11 @@ const Comments = ({ recommendationId }) => {
                   />
                 ) : (
                   <img
-                    src={`http://localhost:3000/photos/${comment.userId}/${user.photo}`}
+                    src={
+                      !comment.profilePhoto
+                        ? "https://i.imgur.com/vgqbOTn.jpeg"
+                        : `http://localhost:3000/photos/${comment.userId}/${comment.profilePhoto}`
+                    }
                     alt=""
                     className="rounded-circle"
                     width="40"

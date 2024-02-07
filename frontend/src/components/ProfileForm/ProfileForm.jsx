@@ -92,7 +92,6 @@ function ProfileForm() {
                       id="newPassword"
                       placeholder="New Password"
                       autoComplete="new-password"
-                      required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                     />

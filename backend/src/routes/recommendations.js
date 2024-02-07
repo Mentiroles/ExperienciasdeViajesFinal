@@ -146,115 +146,6 @@ router.get(
 );
 
 //! GET RECOMENDACION POR ID
-<<<<<<< HEAD
-
-router.get(
-  "/recommendations/:id",
-  wrapWithCatch(async (req, res) => {
-    const { id } = req.params;
-
-    const [recommendation] = await db.execute(
-      `SELECT * FROM recommendations WHERE id = ?`,
-      [id]
-    );
-
-    if (recommendation.length === 0) {
-      throw new Error("Recommendation not found");
-    }
-
-    const [photoRows] = await db.execute(
-      `SELECT url FROM recommendationPhotos WHERE recommendationId = ?`,
-      [id]
-    );
-
-    const photo = photoRows.map((row) => row.url);
-
-    const [comments] = await db.execute(
-      `SELECT * FROM comments WHERE recommendationId = ?`,
-      [id]
-    );
-
-    const [likes] = await db.execute(
-      `SELECT userId FROM recommendationLikes WHERE recommendationId = ?`,
-      [id]
-    );
-
-    const [user] = await db.execute(
-      `SELECT id, nickName, email FROM users WHERE id = ?`,
-      [recommendation[0].userId]
-    );
-
-    const [location] = await db.execute(
-      `SELECT id, country as name FROM locations WHERE id = ?`,
-      [recommendation[0].locationId]
-    );
-
-    sendOK(res, {
-      recommendation: {
-        ...recommendation[0],
-        photos: photo,
-        comments: comments,
-        likes: likes,
-        user: user[0],
-        location: location[0],
-      },
-    });
-  })
-);
-
-//! GET TODOS LOS PAISES
-
-router.get(
-  "/locations",
-  wrapWithCatch(async (req, res) => {
-    const locations = await db.execute(`SELECT * FROM locations`);
-    sendOK(res, locations);
-  })
-);
-
-//! GET IMAGEN
-
-router.get(
-  "/recommendations/:id/image",
-  wrapWithCatch(async (req, res) => {
-    const id = req.params.id;
-
-    const [[recommendation]] = await db.execute(
-      `SELECT * FROM recommendations WHERE id = ?`,
-      [id]
-    );
-
-    if (!recommendation) {
-      throw new Error("Recommendation not found");
-    }
-
-    const [photoRows] = await db.execute(
-      `SELECT url FROM recommendationPhotos WHERE recommendationId = ?`,
-      [id]
-    );
-
-    const photo = photoRows.map((row) => row.url);
-
-    sendOK(res, {
-      photos: photo,
-    });
-  })
-);
-
-//! GET POSTS
-
-router.get("/users/:userId/posts-count", async (req, res) => {
-  const userId = req.params.userId;
-
-  const [[count]] = await db.execute(
-    `SELECT COUNT(*) AS count FROM recommendations WHERE userId = ?`,
-    [userId]
-  );
-
-  sendOK(res, { count: count.count });
-});
-=======
->>>>>>> cf530619324518c2825ffa67d6b189a142f4cf16
 
 router.get(
   "/recommendations/:id",
@@ -331,6 +222,8 @@ router.get(
     sendOK(res, locations);
   })
 );
+
+//! GET TODAS LAS RECOMENDACIONES POR PAIS
 
 //! GET IMAGEN
 
@@ -594,11 +487,7 @@ router.post(
 );
 
 router.delete(
-<<<<<<< HEAD
-  "/recommendations/:recommendationId/like",
-=======
   "/recommendations/:id/like",
->>>>>>> cf530619324518c2825ffa67d6b189a142f4cf16
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
     const recommendationId = req.params.id;
@@ -617,22 +506,4 @@ router.delete(
   })
 );
 
-<<<<<<< HEAD
-router.get(
-  "/recommendations/:recommendationId/like-count",
-  wrapWithCatch(async (req, res) => {
-    const { recommendationId } = req.params;
-
-    const [likeCount] = await db.execute(
-      `SELECT 
-        (SELECT COUNT(*) FROM recommendationLikes WHERE recommendationId = ?) AS likeCount,
-        (SELECT COUNT(*) FROM recommendationLikes WHERE recommendationId = ?) AS dislikeCount`,
-      [recommendationId, recommendationId]
-    );
-
-    res.json(likeCount);
-  })
-);
-=======
->>>>>>> cf530619324518c2825ffa67d6b189a142f4cf16
 export default router;

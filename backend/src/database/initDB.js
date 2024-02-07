@@ -36,6 +36,7 @@ CREATE TABLE locations (
 console.log("Creando columnas de ubicaciones...");
 await db.query(`
 INSERT INTO locations (country) VALUES
+('Choose a country'),
 ('Afghanistan'),
 ('Aland Islands'),
 ('Albania'),
@@ -325,6 +326,7 @@ CREATE TABLE comments (
     recommendationId INT UNSIGNED NOT NULL,
     userId INT UNSIGNED NOT NULL,
     nickName VARCHAR(64) NOT NULL,
+    profilePhoto VARCHAR(400) NULL,
     
     FOREIGN KEY (recommendationId) REFERENCES recommendations(id),
     FOREIGN KEY (userId) REFERENCES users(id)
