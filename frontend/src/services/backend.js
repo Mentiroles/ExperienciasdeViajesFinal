@@ -1,4 +1,3 @@
-import axios from "axios";
 export const registerNewUser = async ({ email, password, nickName }) => {
   const response = await fetch(import.meta.env.VITE_BACKEND + "/register", {
     method: "POST",
@@ -213,16 +212,60 @@ export async function getRecommendationsCountService(userId) {
   }
 }
 
-export const getLikeDislikeCount = async (recommendationId) => {
+export async function likeRecommendation(token) {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND}/recommendations/${id}/like`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to like recommendation");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function dislikeRecommendation(token) {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND}/recommendations/${id}/like`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to dislike recommendation");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function getLikesCountService(userId) {
   try {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_BACKEND
-      }/recommendations/${recommendationId}/like-count`
+      `${import.meta.env.VITE_BACKEND}/users/${userId}/likes-count`
     );
-    return response.data;
+    if (!response.ok) {
+      throw new Error("Failed to fetch recommendations likes");
+    }
+    const data = await response.json();
+    return data.count;
   } catch (error) {
-    console.error("Error fetching like/dislike count:", error);
-    return { likeCount: 0, dislikeCount: 0 };
+    console.error("Error fetching recommendations likes:", error);
+    throw error;
   }
-};
+}

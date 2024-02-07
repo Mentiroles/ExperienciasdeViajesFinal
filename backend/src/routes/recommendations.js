@@ -146,6 +146,7 @@ router.get(
 );
 
 //! GET RECOMENDACION POR ID
+<<<<<<< HEAD
 
 router.get(
   "/recommendations/:id",
@@ -252,7 +253,137 @@ router.get("/users/:userId/posts-count", async (req, res) => {
 
   sendOK(res, { count: count.count });
 });
+=======
+>>>>>>> cf530619324518c2825ffa67d6b189a142f4cf16
 
+router.get(
+  "/recommendations/:id",
+  wrapWithCatch(async (req, res) => {
+    const { id } = req.params;
+
+    const [recommendation] = await db.execute(
+      `SELECT * FROM recommendations WHERE id = ?`,
+      [id]
+    );
+
+    if (recommendation.length === 0) {
+      throw new Error("Recommendation not found");
+    }
+
+    const [photoRows] = await db.execute(
+      `SELECT url FROM recommendationPhotos WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const photo = photoRows.map((row) => row.url);
+
+    const [comments] = await db.execute(
+      `SELECT * FROM comments WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const [user] = await db.execute(
+      `SELECT id, nickName, email FROM users WHERE id = ?`,
+      [recommendation[0].userId]
+    );
+
+    const [location] = await db.execute(
+      `SELECT id, country as name FROM locations WHERE id = ?`,
+      [recommendation[0].locationId]
+    );
+
+    const [[likeCount]] = await db.execute(
+      `SELECT COUNT(*) as count FROM recommendationLikes WHERE recommendationId = ?`,
+      [id]
+    );
+
+    let isLikedByCurrentUser = false;
+
+    if (recommendation[0].userId) {
+      const [[like]] = await db.execute(
+        `SELECT * FROM recommendationLikes WHERE userId = ? AND recommendationId = ? LIMIT 1
+                    `,
+        [recommendation[0].userId, id]
+      );
+      isLikedByCurrentUser = !!like;
+    }
+
+    sendOK(res, {
+      recommendation: {
+        ...recommendation[0],
+        photos: photo,
+        comments: comments,
+        user: user[0],
+        location: location[0],
+        likeCount: likeCount.count,
+        isLikedByCurrentUser: isLikedByCurrentUser,
+      },
+    });
+  })
+);
+
+//! GET TODOS LOS PAISES
+
+router.get(
+  "/locations",
+  wrapWithCatch(async (req, res) => {
+    const locations = await db.execute(`SELECT * FROM locations`);
+    sendOK(res, locations);
+  })
+);
+
+//! GET IMAGEN
+
+router.get(
+  "/recommendations/:id/image",
+  wrapWithCatch(async (req, res) => {
+    const id = req.params.id;
+
+    const [[recommendation]] = await db.execute(
+      `SELECT * FROM recommendations WHERE id = ?`,
+      [id]
+    );
+
+    if (!recommendation) {
+      throw new Error("Recommendation not found");
+    }
+
+    const [photoRows] = await db.execute(
+      `SELECT url FROM recommendationPhotos WHERE recommendationId = ?`,
+      [id]
+    );
+
+    const photo = photoRows.map((row) => row.url);
+
+    sendOK(res, {
+      photos: photo,
+    });
+  })
+);
+
+//! GET POSTS
+
+router.get("/users/:userId/posts-count", async (req, res) => {
+  const userId = req.params.userId;
+
+  const [[count]] = await db.execute(
+    `SELECT COUNT(*) AS count FROM recommendations WHERE userId = ?`,
+    [userId]
+  );
+
+  sendOK(res, { count: count.count });
+});
+
+router.get("/users/:userId/likes-count", async (req, res) => {
+  const userId = req.params.userId;
+
+  const [[count]] = await db.execute(
+    `SELECT COUNT(*) AS count FROM recommendationLikes WHERE userId = ?`,
+    [userId]
+  );
+
+  sendOK(res, { count: count.count });
+});
 // ! CREAR RECOMENDACIONES
 
 const fileParser = fileUpload();
@@ -418,6 +549,15 @@ router.delete(
       [recommendationId]
     );
 
+    await db.execute(
+      `DELETE FROM recommendationLikes WHERE recommendationId = ?`,
+      [recommendationId]
+    );
+
+    await db.execute(`DELETE FROM comments WHERE recommendationId = ?`, [
+      recommendationId,
+    ]);
+
     await db.execute(`DELETE FROM recommendations WHERE id = ?`, [
       recommendationId,
     ]);
@@ -429,10 +569,10 @@ router.delete(
 // ! POST y DELETE  likes en recomendaciones
 
 router.post(
-  "/recommendations/:recommendationId/like",
+  "/recommendations/:id/like",
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
-    const { recommendationId } = req.params;
+    const recommendationId = req.params.id;
     const currentUserId = req.currentUser.id;
 
     const [[existingLike]] = await db.execute(
@@ -454,10 +594,14 @@ router.post(
 );
 
 router.delete(
+<<<<<<< HEAD
   "/recommendations/:recommendationId/like",
+=======
+  "/recommendations/:id/like",
+>>>>>>> cf530619324518c2825ffa67d6b189a142f4cf16
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
-    const { recommendationId } = req.params;
+    const recommendationId = req.params.id;
     const userId = req.currentUser.id;
 
     const result = await db.execute(
@@ -473,6 +617,7 @@ router.delete(
   })
 );
 
+<<<<<<< HEAD
 router.get(
   "/recommendations/:recommendationId/like-count",
   wrapWithCatch(async (req, res) => {
@@ -488,4 +633,6 @@ router.get(
     res.json(likeCount);
   })
 );
+=======
+>>>>>>> cf530619324518c2825ffa67d6b189a142f4cf16
 export default router;

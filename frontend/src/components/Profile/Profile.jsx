@@ -6,13 +6,29 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
-import { getRecommendationsCountService } from "../../services/backend";
+import {
+  getRecommendationsCountService,
+  getLikesCountService,
+} from "../../services/backend";
 import { Link } from "react-router-dom";
 
 function Profile() {
   const { user } = useContext(AuthContext);
   const photo = `http://localhost:3000/photos/${user.id}/${user.photo}`;
   const [recommendationsCount, setRecommendationsCount] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
+
+  useEffect(() => {
+    const fetchLikesCount = async () => {
+      try {
+        const count = await getLikesCountService(user.id);
+        setLikesCount(count);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLikesCount();
+  }, [user.id]);
 
   useEffect(() => {
     const fetchRecommendationsCount = async () => {
@@ -58,9 +74,10 @@ function Profile() {
                     {user.nickName}{" "}
                   </Card.Text>
                   <Link to={`/user/${user.id}`}>
-                    <Button className="btn btn-primary w-100 mt-3">
-                      {" "}
-                      Edit profile{" "}
+                    <Button
+                      type="button"
+                      className="btn btn-info btn-xs glyphicon glyphicon-edit">
+                      Edit
                     </Button>
                   </Link>
                 </div>
@@ -78,7 +95,7 @@ function Profile() {
                     </Card.Text>
                   </div>
                   <div>
-                    <Card.Text className="mb-1 h5">478</Card.Text>
+                    <Card.Text className="mb-1 h5">{likesCount}</Card.Text>
                     <Card.Text className="small text-muted mb-0">
                       Likes
                     </Card.Text>

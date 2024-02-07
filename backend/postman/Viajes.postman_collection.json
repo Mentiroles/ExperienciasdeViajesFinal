@@ -68,11 +68,11 @@
 				{
 					"name": "Gestionar foto perfil",
 					"request": {
-						"method": "POST",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywibmlja05hbWUiOiJHQUZPIiwiaWF0IjoxNzAyNzU0NDcyLCJleHAiOjE3MDMzNTkyNzJ9.Nhdoygh48YrETTOUfUgi1Zsj5_HzY7BhQqPUc_AdVPY",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibmlja05hbWUiOiJ2YW5lcmV6ayIsImlhdCI6MTcwNjExOTA1OSwiZXhwIjoxNzA2NzIzODU5fQ.EaAnhlpt-jk2MAc7M3VqtncALqqLeMv4ZuEi3guko0c",
 								"type": "text"
 							}
 						],
@@ -80,34 +80,22 @@
 							"mode": "formdata",
 							"formdata": [
 								{
-									"key": "user",
-									"value": "2",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "id",
-									"value": "2",
-									"type": "text",
-									"disabled": true
-								},
-								{
 									"key": "photo",
 									"type": "file",
-									"src": "/C:/Users/Vanessa/Downloads/HADES VANE.png"
+									"src": "WhatsApp Image 2023-07-04 at 16.00.34.jpeg"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/users/3/photo",
+							"raw": "http://localhost:3000/user/2/photo",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"users",
-								"3",
+								"user",
+								"2",
 								"photo"
 							]
 						}
@@ -148,6 +136,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Perfil loggeado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwibmlja05hbWUiOiJwcnVlYmFhZm9zIiwiaWF0IjoxNzA2MDIwNDE5LCJleHAiOjE3MDY2MjUyMTl9.ujUZZrzg60YTFY76AOHA4okx-uoiaTyCXzGuLW2pgKU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -161,7 +174,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJ2ZXNxdWVlcmVzZ2FmYSIsImlhdCI6MTcwMjkxOTc0MywiZXhwIjoxNzAzNTI0NTQzfQ.rPxA2mtarXPgCQ7qLzILcdiegnztwjsP_8-iuzmVQFw",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJ2YW5lcmV6ayIsImlhdCI6MTcwNzEyNzg3OCwiZXhwIjoxNzA3NzMyNjc4fQ.j3cAqoKChGSeNd4R6y6OpECGfKSdVxBIlKQV2yG76TY",
 								"type": "text"
 							},
 							{
@@ -172,17 +185,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Testeo de titulo\",\r\n  \"category\": \"playas\",\r\n  \"description\": \"Lorem ipsum fsdfsdfing elitdfdsf. Culpa, fugiat recusandae sapiente accusamus ipsa adipisci in quaerat pariatur praesentium ducimus placeat, illo voluptatem facilis. Animi, adipisci. Consectetur laborum facere expeditsss.\",\r\n  \"country\": \"Spain\",\r\n  \"lean_in\": \"#playa #nuevo\"\r\n}"
+							"raw": "{\r\n  \"title\": \"PASKD12312ASP\",\r\n  \"category\": \"plad\",\r\n  \"description\": \"asd123asdasectetur laborum facere expeditsss.\",\r\n  \"country\": 1,\r\n  \"lean_in\": \"#playa #nuevo\"\r\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/recommendations",
+							"raw": "http://localhost:3000/create-recommendation",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"recommendations"
+								"create-recommendation"
 							]
 						}
 					},
@@ -239,7 +252,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJnYWZhIiwiaWF0IjoxNzAyNTA5MzE5LCJleHAiOjE3MDMxMTQxMTl9.OaVUAszTCWfbhC4u1p_vgKghsdIbE95B4MPECrD9sDw",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJ2YW5lcmV6ayIsImlhdCI6MTcwNzIyNzM4MiwiZXhwIjoxNzA3ODMyMTgyfQ.xYgEuieRQYsaVL17aKCsfpn2IXJueJpVgb8t_48MdbU",
 								"type": "text"
 							},
 							{
@@ -249,19 +262,45 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"title\": \"Norteamerica\",\r\n  \"category\": \"Bomba\",\r\n  \"description\": \"GTA VI\",\r\n  \"locationId\": \"United States\"\r\n}"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "jsasjjsjdas",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Beach",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "ksadnjakasda",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "abstract-geometric-computer-wallpaper-white-border-connecting-dots-digital-technology-vector-design.jpg"
+								}
+							]
 						},
 						"url": {
-							"raw": "http://localhost:3000/recommendations/1",
+							"raw": "http://localhost:3000/edit-recommendations/6",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"recommendations",
-								"1"
+								"edit-recommendations",
+								"6"
 							]
 						}
 					},
@@ -307,31 +346,31 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJURVNUIiwiaWF0IjoxNzAyNjY1MjQ4LCJleHAiOjE3MDMyNzAwNDh9.NFmCmQp76FyCJ7lxMjvO1uygsdoxBV1sU7L7e8yAghI",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJwcnVlYmFnYWZvcyIsImlhdCI6MTcwNTQxNDE2OSwiZXhwIjoxNzA2MDE4OTY5fQ.lNfTYae8pHfgTZ2lTAmlnh162FAkcLQxFw4T7ZBCBWg",
 								"type": "text",
 								"disabled": true
 							},
 							{
-								"key": "",
-								"value": "",
-								"type": "text",
-								"disabled": true
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/recommendations",
+							"raw": "http://localhost:3000/recommendations/?recommendationId=1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
-								"recommendations"
+								"recommendations",
+								""
 							],
 							"query": [
 								{
 									"key": "location",
-									"value": "argentina",
+									"value": "spain",
 									"disabled": true
 								},
 								{
@@ -340,9 +379,13 @@
 									"disabled": true
 								},
 								{
-									"key": "recommendationId",
-									"value": "1",
+									"key": "locationId",
+									"value": "212",
 									"disabled": true
+								},
+								{
+									"key": "recommendationId",
+									"value": "1"
 								}
 							]
 						}
@@ -404,7 +447,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJwcnVlYmFnYWZvcyIsImlhdCI6MTcwNTQxNDE2OSwiZXhwIjoxNzA2MDE4OTY5fQ.lNfTYae8pHfgTZ2lTAmlnh162FAkcLQxFw4T7ZBCBWg",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmlja05hbWUiOiJ2YW5lcmV6ayIsImlhdCI6MTcwNzI0MzgyNSwiZXhwIjoxNzA3ODQ4NjI1fQ.4jyJVrODwbXyT5F79q79UAP3W8abkuEiB9FAWzF-1NU",
 								"type": "text"
 							}
 						],
@@ -478,6 +521,28 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Paises",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET like",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -485,9 +550,16 @@
 			"name": "getFoto",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywibmlja05hbWUiOiJwcnVlYmFhZnMiLCJpYXQiOjE3MDY2MzcwMTYsImV4cCI6MTcwNzI0MTgxNn0._xTFTHtETQALbQlydhW0FDLEv0bBG512XSXgZmLQQsg",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"url": {
-					"raw": "http://localhost:3000/photos/4a2e8691-e743-48b2-b632-8c16c7832ef0.png",
+					"raw": "http://localhost:3000/photos/a5b77511-4ef1-49c9-b72a-47d5d4422619.png",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -495,7 +567,7 @@
 					"port": "3000",
 					"path": [
 						"photos",
-						"4a2e8691-e743-48b2-b632-8c16c7832ef0.png"
+						"a5b77511-4ef1-49c9-b72a-47d5d4422619.png"
 					]
 				}
 			},

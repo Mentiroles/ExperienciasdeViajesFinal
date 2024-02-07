@@ -6,23 +6,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { deleteRecommendationService } from "../../services/backend";
 import Comments from "../../components/Comments/Comments";
-import { getLikeDislikeCount } from "../../services/backend";
-import { useState, useEffect } from "react";
+import LikeButton from "../../components/LikeButton/LikeButton";
+
 const ExpandedRecommendation = ({ recommendationId }) => {
   const { recommendation, error, loading } =
     useSingleRecommendation(recommendationId);
-
-  const [likeCount, setLikeCount] = useState(0);
-  const [DislikeCount, setDislikeCount] = useState(0);
-
-  useEffect(() => {
-    const fetchLikeDislikeCount = async () => {
-      const counts = await getLikeDislikeCount(recommendationId);
-      setLikeCount(counts.likeCount);
-      setDislikeCount(counts.dislikeCount);
-    };
-    fetchLikeDislikeCount();
-  }, [recommendationId]);
 
   const Navigate = useNavigate();
 
@@ -90,12 +78,10 @@ const ExpandedRecommendation = ({ recommendationId }) => {
               onClick={handleDelete}>
               Eliminar
             </Button>
+            <LikeButton />
           </>
         ) : (
-          <>
-            <Button variant="primary">Like {likeCount}</Button>
-            <Button variant="primary">Dislike {DislikeCount}</Button>
-          </>
+          <LikeButton />
         )}
       </div>
       <Comments />
