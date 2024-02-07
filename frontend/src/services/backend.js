@@ -287,3 +287,29 @@ export async function getLikesCountService(userId) {
     throw error;
   }
 }
+
+export const fetchAllRecommendationsService = async () => {
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + "/recommendations"
+  );
+
+  if (!response.ok) {
+    const json = await response.json();
+    throw new Error(json.message);
+  }
+
+  const json = await response.json();
+  return json;
+};
+
+export const searchRecommendationsByCountryService = async (country) => {
+  const allRecommendations = await fetchAllRecommendationsService();
+
+  const filteredRecommendations = allRecommendations.recommendations.filter(
+    (recommendation) => recommendation.location === country
+  );
+
+  console.log(allRecommendations.recommendations);
+
+  return filteredRecommendations;
+};

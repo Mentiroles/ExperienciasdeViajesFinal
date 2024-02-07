@@ -139,7 +139,7 @@ router.get(
         return {
           ...recommendation,
           likeCount: likeCount.count,
-          location,
+          location: location.name,
           user,
           photo,
           comments,
@@ -215,7 +215,7 @@ router.get(
         photos: photo,
         comments: comments,
         user: user[0],
-        location: location[0],
+        location: location[0].name,
         likeCount: likeCount.count,
         isLikedByCurrentUser: isLikedByCurrentUser,
       },
