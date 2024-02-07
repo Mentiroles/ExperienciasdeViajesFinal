@@ -1,4 +1,5 @@
 import SearchBar from "../../components/SearchBar/SearchBar";
+import Recommendations from "../recommendations/Recommendations";
 // import Category from "../../components/Category/Category";
 function Home() {
   return (
@@ -8,6 +9,8 @@ function Home() {
       </h2>
       <SearchBar />
       {/* <Category /> */}
+      <Recommendations />
+      
     </>
   );
 }

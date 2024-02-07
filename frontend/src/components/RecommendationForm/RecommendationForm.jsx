@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import { postCreateRecommendationService } from "../../services/backend";
 import { useNavigate } from "react-router-dom";
 import { getLocationsService } from "../../services/backend";
+import {getCategoriesService} from "../../services/backend";
 
 function RecommendationForm() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function RecommendationForm() {
   const { token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [locations, setLocations] = useState([]);
   const [lean_in, setLean_in] = useState("");
@@ -29,8 +31,19 @@ function RecommendationForm() {
         console.log(error);
       }
     };
+    const loadingCategories = async () => {
+      try {
+        const data = await getCategoriesService();
+        setCategories(data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  
 
+    loadingCategories();
     loadingLocations();
+    
   }, []);
 
   if (!user) {
@@ -82,14 +95,17 @@ function RecommendationForm() {
           <Form.Select
             className="mb-3"
             aria-label="Default select example"
-            onChange={(e) => setCategory(e.target.value)}
             value={category}
             name="category"
-            id="category">
-            <option>Select your category</option>
-            <option value="1">Beach</option>
-            <option value="2">Historic</option>
-            <option value="3">Nature</option>
+            id="category"
+            onChange={(e) => setCategory(e.target.value)}>
+            {categories.map((category) => (
+              <option
+                key={category.id}
+                value={category.id}>
+                {category.category}
+              </option>
+            ))}
           </Form.Select>
           <Form.Control
             as="textarea"

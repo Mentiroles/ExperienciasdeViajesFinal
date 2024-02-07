@@ -23,6 +23,16 @@ import {
 const router = express.Router();
 router.use(authMiddleware);
 
+// ! GET CATEGORIAS
+
+router.get(
+  "/categories",
+  wrapWithCatch(async (req, res) => {
+    const categories = await db.query("SELECT * FROM categories");
+    sendOK(res, categories);
+  })
+)
+
 // ! GET RECOMENDACIONES POR CATEGORIA, UBICACIÓN, ID O TODAS ORDENADAS POR LIKES
 
 const PAGE_SIZE = 20;

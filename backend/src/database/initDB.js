@@ -25,6 +25,28 @@ CREATE TABLE users (
 );
 `);
 
+console.log("Creando tabla de categorías...");
+await db.query(`
+CREATE TABLE categories (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(100) NOT NULL
+);
+`);
+
+console.log("Creando columnas de categorías...");
+await db.query(`
+INSERT INTO categories (category) VALUES
+('Choose a category'),
+('Nature'),
+('Historical/Cultural'),
+('Gastronomic'),
+('Relaxation'),
+('NSFM'),
+('Outside Activities'),
+('Shopping'),
+('Hotels')
+`);
+
 console.log("Creando table de ubicaciones...");
 await db.query(`
 CREATE TABLE locations (
