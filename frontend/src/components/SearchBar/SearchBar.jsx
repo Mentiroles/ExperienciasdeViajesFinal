@@ -3,8 +3,11 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { getLocationsService } from "../../services/backend";
 import { useEffect, useState } from "react";
+import useRecommendation from "../../hooks/useRecommendation";
+import Recommendations from "../../pages/recommendations/Recommendations";
 
 function SearchBar() {
+  const { recommendationsData, setRecommendationsData } = useRecommendation();
   const [locations, setLocations] = useState([]);
   const [country, setCountry] = useState();
 
@@ -22,8 +25,22 @@ function SearchBar() {
     loadingLocations();
   }, []);
 
-  const handleSearch = () => {
-    console.log(country);
+  const handleSearch = async () => {
+    if (country) { setRecommendationsData(recommendationsData.map((recommendation) => {
+      recommendation.filter((recommendation) => {
+        if (recommendation.country === country) {
+          
+          
+          console.log(recommendation);
+          return recommendation;
+        }
+      })
+    }))
+      
+    }
+    if (!country) {
+      console.log("no country");
+    }
   };
 
   return (
@@ -50,6 +67,7 @@ function SearchBar() {
           Search
         </Button>
       </InputGroup>
+      <Recommendations />
     </>
   );
 }

@@ -66,7 +66,7 @@ function RecommendationForm() {
       await postCreateRecommendationService(formData, token);
       navigate("/recommendations");
     } catch (error) {
-      setError(error);
+      setError(error.message);
     }
   };
 
@@ -97,6 +97,7 @@ function RecommendationForm() {
             aria-label="Default select example"
             value={category}
             name="category"
+            required
             id="category"
             onChange={(e) => setCategory(e.target.value)}>
             {categories.map((category) => (
@@ -111,11 +112,13 @@ function RecommendationForm() {
             as="textarea"
             rows={3}
             className="mb-3"
+            required
             placeholder="Enter new description"
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             name="description"
             id="description"
+            minLength={8}
           />
           <Form.Label className="text-muted mb-3">
             Tell us about your trip
@@ -142,20 +145,27 @@ function RecommendationForm() {
           <Form.Control
             as="textarea"
             rows={3}
+            required
             className="mb-3"
             placeholder="Enter hashtags"
             onChange={(e) => setLean_in(e.target.value)}
             value={lean_in}
             name="lean_in"
             id="lean_in"
+            maxLength={50}
           />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Upload your favorite photos from the trip!</Form.Label>
           <Form.Control
             type="file"
+            name="image"
+            id="image"
+            required
+            
             onChange={(e) => setImageFile(e.target.files[0])}
           />
+          
         </Form.Group>
         {error ? <p>{error}</p> : null}
         <Button

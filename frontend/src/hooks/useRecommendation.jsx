@@ -21,8 +21,9 @@ const useRecommendation = () => {
 
     loadingRecommendations();
   }, []);
+  
 
-  return { recommendationsData, error, loading };
+  return { recommendationsData, setRecommendationsData, error, loading };
 };
 
 export default useRecommendation;
