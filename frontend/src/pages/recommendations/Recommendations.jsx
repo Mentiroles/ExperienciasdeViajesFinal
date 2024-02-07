@@ -5,7 +5,6 @@ import "./Recommendations.css";
 const Recommendations = () => {
   const { recommendationsData } = useRecommendation();
 
-
   if (!recommendationsData) {
     return <div>No recommendations available.</div>;
   }

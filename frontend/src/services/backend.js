@@ -210,10 +210,9 @@ export const getCategoriesService = async () => {
 
   if (!response.ok) {
     throw new Error(json.message);
-
   }
   return json;
-}
+};
 
 export async function getRecommendationsCountService(userId) {
   try {
@@ -285,22 +284,6 @@ export async function getLikesCountService(userId) {
     return data.count;
   } catch (error) {
     console.error("Error fetching recommendations likes:", error);
-    throw error;
-  }
-}
-
-export async function getRecomendationSearchService(page, location, category, recommendationId) {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND}/recommendations?page=${page}&location=${location}&category=${category}&recommendationId=${recommendationId}`
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch recommendations");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching recommendations:", error);
     throw error;
   }
 }

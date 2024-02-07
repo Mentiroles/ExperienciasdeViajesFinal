@@ -28,23 +28,24 @@ CREATE TABLE users (
 console.log("Creando tabla de categorías...");
 await db.query(`
 CREATE TABLE categories (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    category VARCHAR(100) NOT NULL
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  category VARCHAR(100) NOT NULL,
+  photo VARCHAR(255)
 );
+
 `);
 
 console.log("Creando columnas de categorías...");
 await db.query(`
 INSERT INTO categories (category) VALUES
-('Choose a category'),
 ('Nature'),
-('Historical/Cultural'),
+('Cultural'),
 ('Gastronomic'),
-('Relaxation'),
-('NSFM'),
+('Relax'),
+('Familiar'),
 ('Outside Activities'),
 ('Shopping'),
-('Hotels')
+('Hotels');
 `);
 
 console.log("Creando table de ubicaciones...");

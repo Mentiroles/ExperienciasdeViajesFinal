@@ -31,7 +31,7 @@ router.get(
     const categories = await db.query("SELECT * FROM categories");
     sendOK(res, categories);
   })
-)
+);
 
 // ! GET RECOMENDACIONES POR CATEGORIA, UBICACIÓN, ID O TODAS ORDENADAS POR LIKES
 
@@ -513,6 +513,17 @@ router.delete(
     } else {
       throwLikeNotFoundError();
     }
+  })
+);
+
+// ! GET CATEGORIAS
+
+router.get(
+  "/categories",
+  wrapWithCatch(async (req, res) => {
+    const [categories] = await db.execute(`SELECT * FROM categories`);
+
+    sendOK(res, { categories });
   })
 );
 

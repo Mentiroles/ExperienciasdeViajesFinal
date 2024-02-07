@@ -1,31 +1,52 @@
-import { Carousel } from "react-bootstrap";
-import { LuTreePine } from "react-icons/lu";
-import { FaStreetView } from "react-icons/fa";
-import { RiTreeFill } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import { getCategoriesService } from "../../services/backend";
+import Card from "react-bootstrap/Card";
+import "./Category.css";
+
 function Category() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadingCategories = async () => {
+      try {
+        const data = await getCategoriesService();
+        setCategories(data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadingCategories();
+  }, []);
+
+  if (!categories) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Carousel
-      className="mt-5"
-      slide={false}>
-      <Carousel.Item>
-        <LuTreePine style={{ width: "100%", height: "auto" }} />
-        <Carousel.Caption>
-          <h3 className="text-primary">Beach</h3>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <FaStreetView style={{ width: "100%", height: "auto" }} />
-        <Carousel.Caption>
-          <h3 className="text-primary">Nature</h3>
-        </Carousel.Caption>
-      </Carousel.Item>
-      <Carousel.Item>
-        <RiTreeFill style={{ width: "100%", height: "auto" }} />
-        <Carousel.Caption>
-          <h3 className="text-primary">Historic</h3>
-        </Carousel.Caption>
-      </Carousel.Item>
-    </Carousel>
+    <>
+      <div
+        className="recommendation-list mt-5 mx-auto"
+        style={{ width: "80%" }}>
+        {categories.map((category) => (
+          <Card
+            key={category.id}
+            className="mb-3mx-auto mt-5 "
+            style={{ width: "18rem", cursor: "pointer" }}>
+            <Card.Img
+              src={`http://localhost:3000/photos/categories/${category.category}.svg`}
+              alt={category.category}
+              className="card-img"
+            />
+            <Card.Body className="text-center">
+              <Card.Title className="text-primary">
+                {category.category}{" "}
+              </Card.Title>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+    </>
   );
 }
 
