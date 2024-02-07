@@ -295,7 +295,7 @@ await db.query(`
 CREATE TABLE recommendations (
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    category VARCHAR(100),
+    category VARCHAR(100) NULL,
     locationId INT UNSIGNED NOT NULL,
     lean_in VARCHAR(100) NULL,
     userId INT UNSIGNED NOT NULL,
@@ -305,19 +305,6 @@ CREATE TABLE recommendations (
     FOREIGN KEY (locationId) REFERENCES locations(id)
 );
 `);
-
-// console.log("Creando columna de categorias...");
-// await db.query(`
-// INSERT INTO recommendations (category) VALUES
-// ('Beach'),
-// ('Rural'),
-// ('Cultural'),
-// ('Nature'),
-// ('Historic'),
-// ('City'),
-// ('Gastronomy'),
-// ('Other')
-// `);
 
 console.log("Creando tabla de fotos de recomendaciones...");
 await db.query(`
@@ -337,6 +324,7 @@ CREATE TABLE comments (
     message VARCHAR(255) NOT NULL,
     recommendationId INT UNSIGNED NOT NULL,
     userId INT UNSIGNED NOT NULL,
+    nickName VARCHAR(64) NOT NULL,
     
     FOREIGN KEY (recommendationId) REFERENCES recommendations(id),
     FOREIGN KEY (userId) REFERENCES users(id)

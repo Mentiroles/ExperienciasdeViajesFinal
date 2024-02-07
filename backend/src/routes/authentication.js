@@ -91,19 +91,54 @@ router.get(
   })
 );
 
-//! RUTA AGREGAR FOTO, Y CAMBIARLA
+//! CAMBIAR PERFIL DE USUARIO Y AGREGAR FOTO
 
-const fileParser = fileUpload();
+const fileParser = fileUpload({ createParentPath: true });
+
 router.patch(
-  "/user/:id/photo",
+  "/user/:id",
   fileParser,
   authMiddleware,
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
+    const id = req.currentUser.id;
+    const { nickName, email, currentPassword, newPassword } = req.body;
     const { photo } = await validateAddPhotoPayload({
       photo: req.files?.photo,
       id: req.currentUser.id,
     });
+
+    const [[user]] = await db.execute(
+      `SELECT password FROM users WHERE id = ?`,
+      [id]
+    );
+
+    const password = user.password;
+
+    const passwordMatch = await bcrypt.compare(currentPassword, password);
+
+    if (!passwordMatch) {
+      throwPasswordMatchError();
+    }
+
+    if (nickName) {
+      await db.execute(`UPDATE users SET nickName = ? WHERE id = ?`, [
+        nickName,
+        id,
+      ]);
+    }
+
+    if (email) {
+      await db.execute(`UPDATE users SET email = ? WHERE id = ?`, [email, id]);
+    }
+
+    if (newPassword) {
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+      await db.execute(`UPDATE users SET password = ? WHERE id = ?`, [
+        hashedPassword,
+        id,
+      ]);
+    }
 
     if (req.currentUser.id !== Number(req.params.id)) {
       throwUnauthorizedError();
@@ -116,8 +151,6 @@ router.patch(
     if (!allowedFileTypes.includes(fileExtension.toLowerCase())) {
       throwInvalidFileTypeError();
     }
-
-    const id = req.params.id;
 
     const userPhotoDir = path.join(PHOTOS_DIR, id.toString());
 
@@ -137,56 +170,10 @@ router.patch(
       id,
     ]);
 
-    sendOKCreated(res, "Photo added successfully!");
+    sendOK(res, {
+      message: "User updated successfully!",
+    });
   })
 );
-
-//! CAMBIAR PERFIL DE USUARIO
-
-router.patch(
-  "/users/:id",
-  authMiddleware,
-  loggedInGuard,
-  wrapWithCatch(async (req, res) => {
-    const id = req.params.id;
-    const { nickname, email, currentPassword, newPassword } = req.body;
-
-    const [[user]] = await db.execute(
-      `SELECT password FROM users WHERE id = ?`,
-      [id]
-    );
-
-    const password = user.password;
-
-    const passwordMatch = await bcrypt.compare(currentPassword, password);
-
-    if (!passwordMatch) {
-      throwPasswordMatchError();
-    }
-
-    if (nickname) {
-      await db.execute(`UPDATE users SET nickname = ? WHERE id = ?`, [
-        nickname,
-        id,
-      ]);
-    }
-
-    if (email) {
-      await db.execute(`UPDATE users SET email = ? WHERE id = ?`, [email, id]);
-    }
-
-    if (newPassword) {
-      const hashedPassword = await bcrypt.hash(newPassword, 12);
-      await db.execute(`UPDATE users SET password = ? WHERE id = ?`, [
-        hashedPassword,
-        id,
-      ]);
-    }
-
-    sendOK(res, { message: "User updated successfully!" });
-  })
-);
-
-//! DEVOLVER URL DE LA FOTO DE PERFIL
 
 export default router;

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { postCreateRecommendationService } from "../../services/backend";
+import { editRecommendationService } from "../../services/backend";
+import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { getLocationsService } from "../../services/backend";
 
-function RecommendationForm() {
+const EditReco = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { token } = useContext(AuthContext);
@@ -14,7 +14,6 @@ function RecommendationForm() {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [locations, setLocations] = useState([]);
-  const [lean_in, setLean_in] = useState("");
   const [country, setCountry] = useState();
   const [imageFile, setImageFile] = useState("");
   const [error, setError] = useState("");
@@ -37,7 +36,7 @@ function RecommendationForm() {
     return <div>You must be logged in</div>;
   }
 
-  const handleForm = async (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
     if (!imageFile) {
       return;
@@ -48,9 +47,8 @@ function RecommendationForm() {
     formData.append("category", category);
     formData.append("description", description);
     formData.append("country", country);
-    formData.append("lean_in", lean_in);
     try {
-      await postCreateRecommendationService(formData, token);
+      await editRecommendationService(formData, token);
       navigate("/recommendations");
     } catch (error) {
       setError(error);
@@ -60,13 +58,12 @@ function RecommendationForm() {
   return (
     <>
       <Form
-        className="w-75 mx-auto mt-5"
-        onSubmit={handleForm}>
+        className="w-75 mx-auto mt-5 "
+        onSubmit={handleEdit}>
         <Form.Group className="mb-3">
-          <Form.Label className="mb-3">Create Title</Form.Label>
+          <Form.Label className="mb-3">Edit title</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter new title"
             required
             className="mb-3"
             onChange={(e) => setTitle(e.target.value)}
@@ -74,9 +71,6 @@ function RecommendationForm() {
             name="title"
             id="title"
           />
-          <Form.Text className="text-muted mb-3">
-            Try to be as descriptive as possible.
-          </Form.Text>
         </Form.Group>
         <Form.Group>
           <Form.Select
@@ -95,15 +89,11 @@ function RecommendationForm() {
             as="textarea"
             rows={3}
             className="mb-3"
-            placeholder="Enter new description"
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             name="description"
             id="description"
           />
-          <Form.Label className="text-muted mb-3">
-            Tell us about your trip
-          </Form.Label>
         </Form.Group>
         <Form.Group>
           <Form.Label className="mb-3">Choose the country</Form.Label>
@@ -121,19 +111,6 @@ function RecommendationForm() {
             ))}
           </Form.Select>
         </Form.Group>
-        <Form.Group>
-          <Form.Label className="text-muted mb-3">Hashtags</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            className="mb-3"
-            placeholder="Enter hashtags"
-            onChange={(e) => setLean_in(e.target.value)}
-            value={lean_in}
-            name="lean_in"
-            id="lean_in"
-          />
-        </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Upload your favorite photos from the trip!</Form.Label>
           <Form.Control
@@ -141,15 +118,16 @@ function RecommendationForm() {
             onChange={(e) => setImageFile(e.target.files[0])}
           />
         </Form.Group>
-        {error ? <p>{error}</p> : null}
+        {error ? <p>{error.message}</p> : null}
         <Button
           variant="primary"
-          type="submit">
-          Create recommendation!
+          type="submit"
+          className="mt-3">
+          Edit!
         </Button>
       </Form>
     </>
   );
-}
+};
 
-export default RecommendationForm;
+export default EditReco;

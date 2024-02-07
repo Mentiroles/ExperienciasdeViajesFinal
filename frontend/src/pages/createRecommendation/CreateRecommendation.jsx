@@ -1,10 +1,10 @@
-
+import RecommendationForm from "../../components/RecommendationForm/RecommendationForm";
 function CreateRecommendation() {
-    return (
-        <>
-         <h1>CreateRecommendation</h1>
-        </>
-    )
+  return (
+    <>
+      <RecommendationForm />
+    </>
+  );
 }
 
-export default CreateRecommendation
+export default CreateRecommendation;

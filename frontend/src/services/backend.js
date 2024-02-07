@@ -1,5 +1,5 @@
 export const registerNewUser = async ({ email, password, nickName }) => {
-  const response = await fetch(`http://localhost:3000/register`, {
+  const response = await fetch(import.meta.env.VITE_BACKEND + "/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const registerNewUser = async ({ email, password, nickName }) => {
 };
 
 export const loginUser = async ({ email, password }) => {
-  const response = await fetch(`http://localhost:3000/login`, {
+  const response = await fetch(import.meta.env.VITE_BACKEND + "/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
     headers: {
@@ -35,7 +35,7 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const getMyUserDataService = async ({ token }) => {
-  const response = await fetch(`http://localhost:3000/user`, {
+  const response = await fetch(import.meta.env.VITE_BACKEND + "/user", {
     headers: {
       Authorization: token,
     },
@@ -51,12 +51,221 @@ export const getMyUserDataService = async ({ token }) => {
 };
 
 export const getRecommendationsService = async () => {
-  const response = await fetch("http://localhost:3000/recommendations/");
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + "/recommendations"
+  );
 
   const json = await response.json();
 
   if (!response.ok) {
     throw new Error(json.message);
   }
+
   return json.recommendations;
 };
+
+export const getRecommendationByIdService = async () => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}`
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};
+
+export const editRecommendationService = async (formData, token) => {
+  const recommendationId = window.location.pathname.split("/").pop();
+  const url =
+    import.meta.env.VITE_BACKEND +
+    "/edit-recommendations/" +
+    `${recommendationId}`;
+  const options = {
+    method: "PATCH",
+    headers: {
+      Authorization: token,
+    },
+    body: formData,
+  };
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+  return response.json();
+};
+
+export const editProfileService = async (formData, token) => {
+  const id = window.location.pathname.split("/").pop();
+  const url = import.meta.env.VITE_BACKEND + "/user/" + `${id}`;
+  const options = {
+    method: "PATCH",
+    headers: {
+      Authorization: token,
+    },
+    body: formData,
+  };
+
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+  return response.json();
+};
+
+export const postCommentsService = async (
+  token,
+  message,
+  userId,
+  nickName,
+  recommendationId
+) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}/comments`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message, userId, recommendationId, nickName }),
+    }
+  );
+  return response.json();
+};
+
+export const postCreateRecommendationService = async (formData, token) => {
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + "/create-recommendation",
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: formData,
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json.data;
+};
+
+export const deleteRecommendationService = async (token) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/delete-recommendations/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};
+
+export const getLocationsService = async () => {
+  const response = await fetch(import.meta.env.VITE_BACKEND + "/locations");
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+  return json;
+};
+
+export async function getRecommendationsCountService(userId) {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND}/users/${userId}/posts-count`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch recommendations count");
+    }
+    const data = await response.json();
+    return data.count;
+  } catch (error) {
+    console.error("Error fetching recommendations count:", error);
+    throw error;
+  }
+}
+
+export async function likeRecommendation(token) {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND}/recommendations/${id}/like`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to like recommendation");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function dislikeRecommendation(token) {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND}/recommendations/${id}/like`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to dislike recommendation");
+  }
+
+  const data = await response.json();
+
+  return data;
+}
+
+export async function getLikesCountService(userId) {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND}/users/${userId}/likes-count`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch recommendations likes");
+    }
+    const data = await response.json();
+    return data.count;
+  } catch (error) {
+    console.error("Error fetching recommendations likes:", error);
+    throw error;
+  }
+}

@@ -7,7 +7,7 @@ export async function authMiddleware(req, res, next) {
     try {
       const { id } = jwt.verify(token, process.env.SECRET);
       const [[user]] = await db.execute(
-        `SELECT id, email FROM users WHERE id = ?`,
+        `SELECT id, email, nickName FROM users WHERE id = ?`,
         [id]
       );
       req.currentUser = user;
