@@ -29,7 +29,7 @@ router.post(
   
 
     const [{ insertId }] = await db.execute(
-      `INSERT INTO comments(message, recommendationId, userId ) VALUES(?,?,?,)`,
+      `INSERT INTO comments(message, recommendationId, userId ) VALUES(?,?,?)`,
       [message, recommendationId, userId]
     );
 
