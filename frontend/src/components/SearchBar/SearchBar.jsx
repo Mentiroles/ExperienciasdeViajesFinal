@@ -39,7 +39,7 @@ function SearchBar() {
   return (
     <>
       <Form onSubmit={handleSearch}>
-        <InputGroup className=" mb-3 w-75 mx-auto">
+        <InputGroup className=" mb-3 w-25 mx-auto">
           <Form.Select
             required
             name="country"

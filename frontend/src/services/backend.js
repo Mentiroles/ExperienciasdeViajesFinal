@@ -306,10 +306,8 @@ export const searchRecommendationsByCountryService = async (country) => {
   const allRecommendations = await fetchAllRecommendationsService();
 
   const filteredRecommendations = allRecommendations.recommendations.filter(
-    (recommendation) => recommendation.location === country
+    (recommendation) => recommendation.locationId === country
   );
-
-  console.log(allRecommendations.recommendations);
 
   return filteredRecommendations;
 };
