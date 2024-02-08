@@ -19,6 +19,7 @@ import {
   throwExistingLikeError,
   throwLikeNotFoundError,
 } from "../utils/errors.js";
+import { log } from "node:console";
 
 const router = express.Router();
 router.use(authMiddleware);
@@ -132,10 +133,10 @@ router.get(
         }
 
         const [[comments]] = await db.execute(
-          `SELECT * FROM comments WHERE recommendationId = ?`,
+          `SELECT C.*,nickName,photo AS profilePicture FROM comments C LEFT JOIN users U on U.id=C.userId WHERE recommendationId = ?`,
           [recommendation.id]
         );
-
+          console.log(comments);
         return {
           ...recommendation,
           likeCount: likeCount.count,

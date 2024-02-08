@@ -39,7 +39,7 @@ const Comments = ({ recommendationId }) => {
   };
 
   const comments = recommendation.recommendation.comments;
-
+  console.log(comments)
   return (
     <>
       <section>
@@ -51,14 +51,7 @@ const Comments = ({ recommendationId }) => {
               <div
                 key={comment.id}
                 className="d-flex align-items-center gap-3 mb-3">
-                {!user.photo ? (
-                  <img
-                    src="https://i.imgur.com/yTFUilP.jpg"
-                    className="rounded-circle"
-                    width="40"
-                    height="40"
-                  />
-                ) : (
+                
                   <img
                     src={
                       !comment.profilePhoto
@@ -70,7 +63,7 @@ const Comments = ({ recommendationId }) => {
                     width="40"
                     height="40"
                   />
-                )}
+                
                 <p className="m-0">
                   {comment.nickName}: {comment.message}
                 </p>

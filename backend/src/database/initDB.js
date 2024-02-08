@@ -348,9 +348,7 @@ CREATE TABLE comments (
     message VARCHAR(255) NOT NULL,
     recommendationId INT UNSIGNED NOT NULL,
     userId INT UNSIGNED NOT NULL,
-    nickName VARCHAR(64) NOT NULL,
-    profilePhoto VARCHAR(400) NULL,
-    
+   
     FOREIGN KEY (recommendationId) REFERENCES recommendations(id),
     FOREIGN KEY (userId) REFERENCES users(id)
 );

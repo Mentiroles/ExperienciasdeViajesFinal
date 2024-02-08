@@ -13,34 +13,40 @@ import {
 import { Link } from "react-router-dom";
 
 function Profile() {
-  const { user } = useContext(AuthContext);
-  const photo = `http://localhost:3000/photos/${user.id}/${user.photo}`;
+  let { user, token } = useContext(AuthContext);
+  console.log(token)
+  console.log(user)
+
+  
   const [recommendationsCount, setRecommendationsCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
+  
 
   useEffect(() => {
     const fetchLikesCount = async () => {
       try {
-        const count = await getLikesCountService(user.id);
-        setLikesCount(count);
+        if (user) { const count = await getLikesCountService(user.id);
+          setLikesCount(count);}
+      
       } catch (error) {
         console.error(error);
       }
     };
     fetchLikesCount();
-  }, [user.id]);
+  }, [user]);
 
   useEffect(() => {
     const fetchRecommendationsCount = async () => {
       try {
-        const count = await getRecommendationsCountService(user.id);
-        setRecommendationsCount(count);
+        if (user) {   const count = await getRecommendationsCountService(user.id);
+          setRecommendationsCount(count);}
+          
       } catch (error) {
         console.error(error);
       }
     };
     fetchRecommendationsCount();
-  }, [user.id]);
+  }, [user]);
 
   if (!user) {
     return <div>Loading...</div>;
@@ -59,7 +65,7 @@ function Profile() {
                   className="ms-4 mt-5 d-flex flex-column"
                   style={{ width: "150px" }}>
                   <Image
-                    src={photo}
+                    src={`http://localhost:3000/photos/${user.id}/${user.photo}`}
                     alt="Profile photo"
                     className="img-thumbnail rounded-circle "
                     style={{
