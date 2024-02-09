@@ -66,7 +66,7 @@ function RecommendationForm() {
       await postCreateRecommendationService(formData, token);
       navigate("/recommendations");
     } catch (error) {
-      setError(error);
+      setError(error.message);
     }
   };
 

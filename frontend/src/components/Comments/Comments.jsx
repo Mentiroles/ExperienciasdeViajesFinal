@@ -26,9 +26,9 @@ const Comments = ({ recommendationId }) => {
         token,
         message,
         user.id,
-        user.nickName,
+        
         recommendation.recommendation.id,
-        user.photo
+        
       );
       window.location.reload();
     } catch (error) {
@@ -37,7 +37,6 @@ const Comments = ({ recommendationId }) => {
       navigate(`/recommendations/${recommendation.recommendation.id}`);
     }
   };
-
   const comments = recommendation.recommendation.comments;
   console.log(comments)
   return (
@@ -54,9 +53,9 @@ const Comments = ({ recommendationId }) => {
                 
                   <img
                     src={
-                      !comment.profilePhoto
+                      !comment.photo
                         ? "https://i.imgur.com/vgqbOTn.jpeg"
-                        : `http://localhost:3000/photos/${comment.userId}/${comment.profilePhoto}`
+                        : `http://localhost:3000/photos/${comment.userId}/${comment.photo}`
                     }
                     alt=""
                     className="rounded-circle"

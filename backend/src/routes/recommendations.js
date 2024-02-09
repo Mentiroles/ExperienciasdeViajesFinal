@@ -61,12 +61,12 @@ router.get(
 
     if (location && category) {
       query += `
-      WHERE locations.country = ? AND category = ?
+      WHERE locations.id = ? AND category = ?
       `;
       params = [location, category];
     } else if (location) {
       query += `
-      WHERE locations.country = ?
+      WHERE locations.id = ?
       `;
       params = [location];
     } else if (category) {
@@ -180,7 +180,13 @@ router.get(
     const photo = photoRows.map((row) => row.url);
 
     const [comments] = await db.execute(
-      `SELECT * FROM comments WHERE recommendationId = ?`,
+      `SELECT
+      comments.*,
+      users.nickName,
+      users.photo
+    FROM comments
+    INNER JOIN users ON comments.userId = users.id
+    WHERE recommendationId = ?`,
       [id]
     );
 

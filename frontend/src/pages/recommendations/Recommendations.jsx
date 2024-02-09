@@ -21,7 +21,7 @@ const Recommendations = () => {
               key={recommendation.id}
               className="recommendation"
             />
-          ))}
+          ))}vb 
         </div>
       </section>
     </>

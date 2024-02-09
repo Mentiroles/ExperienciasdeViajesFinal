@@ -64,6 +64,21 @@ export const getRecommendationsService = async () => {
   return json.recommendations;
 };
 
+export const getRecommendationByCountryIdService = async () => {
+  const id = window.location.pathname.split("=").pop();
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND}/recommendations?location=${id}`);
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    
+    throw new Error(json.message);
+  }
+
+  return json;
+}
+
 export const getRecommendationByIdService = async () => {
   const id = window.location.pathname.split("/").pop();
   const response = await fetch(

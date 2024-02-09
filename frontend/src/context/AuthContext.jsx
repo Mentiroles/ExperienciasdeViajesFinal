@@ -18,14 +18,14 @@ console.log("token", token)
       try {
         const data = await getMyUserDataService({ token });
         setUser(data);
-        console.log(data);
+        
       } catch (error) {
         logout();
       }
     };
 
     if (token) getMyUserData();
-  }, []);
+  }, [token]);
 
   const login = (token) => {
     setToken(token);
