@@ -1,0 +1,17 @@
+body {
+font-family: 'Roboto', sans-serif;
+    
+}
+
+.profile-header {
+    transform: translateY(5rem);
+}
+
+.recommendation-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+}
+
+
+
