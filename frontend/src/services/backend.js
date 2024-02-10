@@ -68,17 +68,32 @@ export const getRecommendationByCountryIdService = async () => {
   const id = window.location.search.split("/?location=").pop();
   console.log(id);
   const response = await fetch(
-    import.meta.env.VITE_BACKEND + `/recommendations/${id}`);
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}`
+  );
 
   const json = await response.json();
 
   if (!response.ok) {
-    
     throw new Error(json.message);
   }
 
   return json;
-}
+};
+
+export const getRecommendationsByCategoryService = async () => {
+  const id = window.location.search.split("/?category=").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}`
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};
 
 export const getRecommendationByIdService = async () => {
   const id = window.location.pathname.split("/").pop();

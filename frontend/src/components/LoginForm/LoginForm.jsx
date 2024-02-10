@@ -20,9 +20,7 @@ export const LoginForm = () => {
   try {
     const token= await loginUser({ email, password });
     login(token);
-    
     navigate('/');
-    
   } catch (error) {
     setError(error.message);
   }

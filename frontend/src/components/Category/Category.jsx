@@ -4,9 +4,13 @@ import Card from "react-bootstrap/Card";
 import Carousel from "react-bootstrap/Carousel";
 import "./Category.css";
 import { Link } from "react-router-dom";
+import { getRecommendationsByCategoryService } from "../../services/backend";
+import { useNavigate } from "react-router-dom";
 
 function Category() {
   const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadingCategories = async () => {
@@ -21,10 +25,24 @@ function Category() {
     loadingCategories();
   }, []);
 
+  const handleSearch = async (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    try {
+      const data = await getRecommendationsByCategoryService(category);
+      console.log(data);
+      navigate(`/recommendations/?category=${category}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!categories) {
     return <div>Loading...</div>;
   }
 
+  console.log(categories);
   return (
     <div
       className="recommendation-list d-flex justify-content-center"
@@ -35,31 +53,37 @@ function Category() {
             <div
               key={category.id}
               className="col-md-4">
-              <Link to={`/recommendations/?category=${category.category}`}>
-                <Card
-                  className="mb-3 mx-auto mt-5 border-0 shadow-sm rounded-3 "
+              <Card
+                className="mb-3 mx-auto mt-5 border-0 shadow-sm rounded-3 "
+                style={{
+                  width: "12rem",
+                  cursor: "pointer",
+                  background: "none" /* se puede quitar */,
+                }}>
+                <Card.Img
+                  src={`http://localhost:3000/photos/categories/${category.category}.svg`}
+                  alt={category.category}
+                  className="card-img"
                   style={{
-                    width: "12rem",
-                    cursor: "pointer",
-                    background: "none" /* se puede quitar */,
-                  }}>
-                  <Card.Img
-                    src={`http://localhost:3000/photos/categories/${category.category}.svg`}
-                    alt={category.category}
-                    className="card-img"
-                    style={{
-                      width: "150px",
-                      height: "150px",
-                      margin: "0 auto",
-                    }}
-                  />
-                  <Card.Body className="text-center">
-                    <Card.Title className="text-primary">
-                      {category.category}
-                    </Card.Title>
-                  </Card.Body>
-                </Card>
-              </Link>
+                    width: "150px",
+                    height: "150px",
+                    margin: "0 auto",
+                  }}
+                />
+                <Card.Body className="text-center">
+                  <Card.Title
+                    className="text-primary"
+                    id="category"
+                    key={category.category}
+                    value={category.category}
+                    onClick={() => {
+                      setCategory(category.category);
+                      handleSearch();
+                    }}>
+                    {category.category}
+                  </Card.Title>
+                </Card.Body>
+              </Card>
             </div>
           ))}
         </div>
