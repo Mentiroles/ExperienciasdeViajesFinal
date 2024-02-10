@@ -136,7 +136,7 @@ router.get(
           `SELECT C.*,nickName,photo AS profilePicture FROM comments C LEFT JOIN users U on U.id=C.userId WHERE recommendationId = ?`,
           [recommendation.id]
         );
-          console.log(comments);
+        console.log(comments);
         return {
           ...recommendation,
           likeCount: likeCount.count,
@@ -221,6 +221,22 @@ router.get(
         isLikedByCurrentUser: isLikedByCurrentUser,
       },
     });
+  })
+);
+
+//! GET RECOMENDACION POR ID DE USUARIO
+
+router.get(
+  "/user/:id/recommendations",
+  wrapWithCatch(async (req, res) => {
+    const { id } = req.params;
+
+    const [recommendations] = await db.execute(
+      `SELECT * FROM recommendations WHERE userId = ?`,
+      [id]
+    );
+
+    sendOK(res, { recommendations });
   })
 );
 
