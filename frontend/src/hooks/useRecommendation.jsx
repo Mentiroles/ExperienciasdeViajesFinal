@@ -10,24 +10,26 @@ const useRecommendation = () => {
     const loadingRecommendations = async () => {
       try {
         setLoading(true);
-        if( window.location.pathname.split("/").pop() === `recommendations?location=${num}` ){
-          const data = await getRecommendationByCountryIdService();
-          setRecommendationsData(data);
-        }else{
+        const params = new URLSearchParams(window.location.search);
+        const locationParam = params.get('location');
+
+        if (window.location.pathname === "/recommendations/" && locationParam) {
+          const data = await getRecommendationByCountryIdService(locationParam);
+          setRecommendationsData(data.recommendations);
+          console.log(data);
+        } else {
           const data = await getRecommendationsService();
           setRecommendationsData(data);
         }
-       
       } catch (error) {
         setError(error);
       } finally {
         setLoading(false);
       }
     };
+
     loadingRecommendations();
   }, []);
-  
-
 
   return { recommendationsData, error, loading };
 };
