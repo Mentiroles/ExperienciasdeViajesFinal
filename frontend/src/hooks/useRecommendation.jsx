@@ -22,14 +22,20 @@ const useRecommendation = () => {
           const data = await getRecommendationByCountryIdService(locationParam);
           setRecommendationsData(data.recommendations);
           console.log(data);
-        }
-        if (window.location.pathname === "/recommendations/" && categoryParam) {
-          const data = await getRecommendationsByCategoryService();
-          setRecommendationsData(data.recommendations);
-          console.log(data);
         } else {
           const data = await getRecommendationsService();
           setRecommendationsData(data);
+
+          if (
+            window.location.pathname === "/recommendations/" &&
+            categoryParam
+          ) {
+            const data = await getRecommendationsByCategoryService(
+              categoryParam
+            );
+            setRecommendationsData(data.recommendations);
+            console.log(data);
+          }
         }
       } catch (error) {
         setError(error);

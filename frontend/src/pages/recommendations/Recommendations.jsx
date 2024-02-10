@@ -5,8 +5,12 @@ import "./Recommendations.css";
 const Recommendations = () => {
   const { recommendationsData } = useRecommendation();
 
-  if (!recommendationsData) {
-    return <div>No recommendations available.</div>;
+  if (!recommendationsData || recommendationsData.length === 0) {
+    return (
+      <div className="text-center mt-5 mb-5 text-primary h3">
+        No recommendations with those filters found!
+      </div>
+    );
   }
   return (
     <>
