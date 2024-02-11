@@ -180,6 +180,28 @@ export const postCommentsService = async (
   return response.json();
 };
 
+export const deleteCommentService = async (token) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}/comments`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};
+
 export const postCreateRecommendationService = async (formData, token) => {
   const response = await fetch(
     import.meta.env.VITE_BACKEND + "/create-recommendation",

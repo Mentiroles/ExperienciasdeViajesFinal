@@ -9,6 +9,7 @@ import "./Profile.css";
 import Button from "react-bootstrap/Button";
 import useRecommendation from "../../hooks/useRecommendation";
 import Carousel from "react-bootstrap/Carousel";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   let { user, token } = useContext(AuthContext);
@@ -26,6 +27,7 @@ function Profile() {
 
   const [recommendationsCount, setRecommendationsCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLikesCount = async () => {
@@ -66,12 +68,22 @@ function Profile() {
           <div className="px-4 pt-0 pb-4 bg-secondary text-center ">
             <div className="media align-items-end profile-header ">
               <div className="profile mr-3 ">
-                <img
-                  src={`http://localhost:3000/photos/${user.id}/${user.photo}`}
-                  alt="..."
-                  style={{ width: 150, height: 150, objectFit: "cover" }}
-                  className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
-                />
+                {user.photo ? (
+                  <img
+                    src={`http://localhost:3000/photos/${user.id}/${user.photo}`}
+                    alt="..."
+                    style={{ width: 150, height: 150, objectFit: "cover" }}
+                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
+                  />
+                ) : (
+                  <img
+                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                    alt="..."
+                    style={{ width: 150, height: 150, objectFit: "cover" }}
+                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
+                  />
+                )}
+
                 <Link to={`/user/${user.id}`}>
                   <Button
                     type="button"
@@ -146,9 +158,13 @@ function Profile() {
                         className="img-thumbnail mx-auto d-block"
                       />
                     )}
+
                     <h5
                       className="card-title  text-center  font-weight-bold text-primary "
-                      style={{ marginTop: "10px" }}>
+                      style={{ marginTop: "10px" }}
+                      onClick={() =>
+                        navigate(`/recommendations/${recommendation.id}`)
+                      }>
                       {recommendation.title}
                     </h5>
                     <p className="card-text text-center ">

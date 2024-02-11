@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { deleteRecommendationService } from "../../services/backend";
 import Comments from "../../components/Comments/Comments";
 import LikeButton from "../../components/LikeButton/LikeButton";
+import Carousel from "react-bootstrap/Carousel";
+import "./ExpandedRecommendation.css";
 
 const ExpandedRecommendation = ({ recommendationId }) => {
   const { recommendation, error, loading } =
@@ -45,27 +47,7 @@ const ExpandedRecommendation = ({ recommendationId }) => {
 
   return (
     <div className="container d-flex flex-column align-items-center">
-      <h2>{title}</h2>
-      {photos.map((photo) => (
-        <img
-          src={`http://localhost:3000/photos/${photo}`}
-          alt="Reco1"
-          key={photo}
-          className="img-thumbnail"
-          style={{
-            width: "300px",
-            height: "300px",
-            objectFit: "cover",
-            objectPosition: "center",
-            marginTop: "20px",
-            marginBottom: "20px",
-          }}
-        />
-      ))}
-      <p>{description}</p>
-
-      <p>{lean_in}</p>
-      <p>Posted by: {nickName} </p>
+      <h2 className="text-center mt-5 mb-5 text-primary"> {title}</h2>
       <div className="mb-3 d-flex justify-content-center align-items-center gap-3">
         {user && user.nickName === nickName ? (
           <>
@@ -74,16 +56,49 @@ const ExpandedRecommendation = ({ recommendationId }) => {
               <Button variant="primary">Editar</Button>
             </Link>
             <Button
-              variant="danger"
-              onClick={handleDelete}>
-              Eliminar
+              className="bi bi-trash text-danger"
+              onClick={handleDelete}
+              variant="danger">
+              Delete
             </Button>
+          </>
+        ) : (
+          <></>
+        )}
+      </div>
+      <Carousel
+        slide={false}
+        className="mx-auto">
+        {photos.map((photo) => (
+          <Carousel.Item key={photo}>
+            <img
+              src={`http://localhost:3000/photos/${photo}`}
+              alt="Recommendation"
+              style={{
+                height: "400px",
+                width: "400px",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+            />
+          </Carousel.Item>
+        ))}
+      </Carousel>
+      <p className="text-center mt-5 mb-5 ">{description}</p>
+
+      <i>{lean_in}</i>
+      <p className="text-center mt-5 mb-5">Posted by: {nickName} </p>
+
+      <div className="mb-3 d-flex justify-content-center align-items-center gap-3">
+        {user && user.nickName === nickName ? (
+          <>
             <LikeButton />
           </>
         ) : (
           <LikeButton />
         )}
       </div>
+
       <Comments />
     </div>
   );

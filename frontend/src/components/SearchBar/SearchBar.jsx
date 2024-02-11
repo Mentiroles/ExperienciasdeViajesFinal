@@ -27,9 +27,7 @@ function SearchBar() {
   }, []);
 
   const handleSearch = async (e) => {
-    if (e) {
-      e.preventDefault();
-    }
+    e.preventDefault();
     try {
       const data = await searchRecommendationsByCountryService(country);
       console.log(data);
@@ -65,10 +63,11 @@ function SearchBar() {
                   .map((country) => (
                     <Dropdown.Item
                       key={country.id}
-                      onClick={() => {
-                        setCountry(country.id);
-                        handleSearch();
-                      }}>
+                      value={country.id}
+                      id={country.id}
+                      name={country.country}
+                      onMouseUp={(e) => setCountry(e.target.id)}
+                      onClick={handleSearch}>
                       {country.country}
                     </Dropdown.Item>
                   ))}
