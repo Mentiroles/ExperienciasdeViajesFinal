@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { postCommentsService } from "../../services/backend";
+import {
+  postCommentsService,
+  deleteCommentService,
+} from "../../services/backend";
 import useSingleRecommendation from "../../hooks/useSingleRecommendation";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -38,8 +41,18 @@ const Comments = ({ recommendationId }) => {
     }
   };
 
+  const handleDelete = async (commentId) => {
+    try {
+      await deleteCommentService(token, commentId);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      window.location.reload();
+    }
+  };
+
   const comments = recommendation.recommendation.comments;
-  console.log(comments)
+  console.log(comments);
   return (
     <>
       <section>
@@ -51,22 +64,29 @@ const Comments = ({ recommendationId }) => {
               <div
                 key={comment.id}
                 className="d-flex align-items-center gap-3 mb-3">
-                
-                  <img
-                    src={
-                      !comment.profilePhoto
-                        ? "https://i.imgur.com/vgqbOTn.jpeg"
-                        : `http://localhost:3000/photos/${comment.userId}/${comment.profilePhoto}`
-                    }
-                    alt=""
-                    className="rounded-circle"
-                    width="40"
-                    height="40"
-                  />
-                
+                <img
+                  src={
+                    !comment.profilePhoto
+                      ? "https://i.imgur.com/vgqbOTn.jpeg"
+                      : `http://localhost:3000/photos/${comment.userId}/${comment.profilePhoto}`
+                  }
+                  alt=""
+                  className="rounded-circle"
+                  width="40"
+                  height="40"
+                />
+
                 <p className="m-0">
                   {comment.nickName}: {comment.message}
                 </p>
+
+                {user.nickName === comment.nickName && (
+                  <button
+                    className="btn btn-danger btn-sm  rounded-pill ms-3 "
+                    onClick={() => handleDelete(comment.id)}>
+                    Delete
+                  </button>
+                )}
               </div>
             ))}
             <div className="w-100">

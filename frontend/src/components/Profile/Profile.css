@@ -7,11 +7,27 @@ font-family: 'Roboto', sans-serif;
     transform: translateY(5rem);
 }
 
-.recommendation-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 10px;
+
+
+@media (max-width: 768px) {
+    .recommendation-cards {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
 }
+
+@media (min-width: 768px) {
+    .recommendation-cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+}
+
+
+
 
 
 

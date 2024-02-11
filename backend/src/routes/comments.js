@@ -26,7 +26,6 @@ router.post(
     });
 
     const userId = req.currentUser.id;
-  
 
     const [{ insertId }] = await db.execute(
       `INSERT INTO comments(message, recommendationId, userId ) VALUES(?,?,?)`,
@@ -37,30 +36,21 @@ router.post(
   })
 );
 
+// ! ELIMINAR COMENTARIOS
+
 router.delete(
-  "/recommendations/:recommendationId/comentarios/:commentId",
+  "/recommendations/:id/comments",
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
-    const recommendationId = req.params.recommendationId;
-    const commentId = req.params.commentId;
-    const currentUserId = req.currentUser.id;
+    const recommendationId = req.params.id;
+    const userId = req.currentUser.id;
 
-    const [comment] = await db.execute(
-      "SELECT * FROM comments WHERE  id = ? AND recommendationId = ?",
-      [commentId, recommendationId]
+    const [{ affectedRows }] = await db.execute(
+      `DELETE FROM comments WHERE recommendationId = ? AND userId = ?`,
+      [recommendationId, userId]
     );
 
-    if (!commentId) {
-      throwCommentNotFoundError();
-    }
-
-    if (comment[0].userId !== currentUserId) {
-      throwUnauthorizedError();
-    }
-
-    await db.execute("DELETE FROM comments WHERE id = ?", [commentId]);
-
-    sendOK(res, { success: true });
+    sendOK(res, { affectedRows });
   })
 );
 
