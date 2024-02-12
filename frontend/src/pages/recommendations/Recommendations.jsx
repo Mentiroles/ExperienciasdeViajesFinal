@@ -17,7 +17,7 @@ const Recommendations = () => {
       <section className="fondo">
         <h2 className="text-center mt-5 mb-5 text-primary">Recommendations</h2>
         <div
-          className="recommendation-list"
+          className="recommendation-list "
           style={{ marginTop: "-100px" }}>
           {recommendationsData.map((recommendation) => (
             <Recommendation

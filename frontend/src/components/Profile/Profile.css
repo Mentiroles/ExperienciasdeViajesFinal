@@ -9,6 +9,8 @@ font-family: 'Roboto', sans-serif;
 
 
 
+
+
 @media (max-width: 768px) {
     .recommendation-cards {
         display: flex;
@@ -24,6 +26,13 @@ font-family: 'Roboto', sans-serif;
         flex-wrap: wrap;
         justify-content: space-around;
     }
+}
+
+.fotoperfil {
+    width: 150px;
+    height: 150px;
+    
+    object-fit: cover;
 }
 
 

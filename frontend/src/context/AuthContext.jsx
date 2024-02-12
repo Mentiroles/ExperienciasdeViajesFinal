@@ -14,7 +14,6 @@ function AuthContextProviderComponent({ children }) {
   console.log("token", token);
   useEffect(() => {
     const getMyUserData = async () => {
-      console.log("se ejecuta");
       try {
         const data = await getMyUserDataService({ token });
         setUser(data);

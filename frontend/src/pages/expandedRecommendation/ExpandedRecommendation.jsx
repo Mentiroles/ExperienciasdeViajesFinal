@@ -102,7 +102,7 @@ const ExpandedRecommendation = ({ recommendationId }) => {
             {photos.map((photo) => (
               <Carousel.Item key={photo}>
                 <img
-                  src={`http://localhost:3000/photos/${photo}`}
+                  src={import.meta.env.VITE_BACKEND + `/photos/${photo}`}
                   alt="Recommendation"
                   style={{
                     height: "400px",

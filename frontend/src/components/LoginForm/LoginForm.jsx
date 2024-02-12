@@ -75,7 +75,7 @@ export const LoginForm = () => {
         </Button>
 
         <FormText className="text-center">
-          Don't have an account?{" "}
+          Don't have an account yet?{" "}
           <Link to="/register">
             <Button variant="link">Register</Button>
           </Link>

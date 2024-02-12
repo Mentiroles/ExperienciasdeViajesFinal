@@ -59,7 +59,10 @@ function Category() {
                   background: "none" /* se puede quitar */,
                 }}>
                 <Card.Img
-                  src={`http://localhost:3000/photos/categories/${category.category}.svg`}
+                  src={
+                    import.meta.env.VITE_BACKEND +
+                    `/photos/categories/${category.category}.svg`
+                  }
                   alt={category.category}
                   className="card-img"
                   style={{
@@ -99,7 +102,10 @@ function Category() {
                   background: "none" /* se puede quitar */,
                 }}>
                 <Card.Img
-                  src={`http://localhost:3000/photos/categories/${category.category}.svg`}
+                  src={
+                    import.meta.env.VITE_BACKEND +
+                    `/photos/categories/${category.category}.svg`
+                  }
                   alt={category.category}
                   className="card-img"
                 />

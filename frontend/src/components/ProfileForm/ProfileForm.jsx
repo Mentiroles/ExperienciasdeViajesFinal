@@ -105,6 +105,10 @@ function ProfileForm() {
             onChange={(e) => setImageFile(e.target.files[0])}
           />
         </Form.Group>
+        <i>
+          To upload a profile photo, you only need to type your current
+          password!
+        </i>
         <div className="mt-3 ">
           <Button
             variant="primary"
@@ -113,6 +117,7 @@ function ProfileForm() {
           </Button>
         </div>
       </Form>
+
       {error ? <p>{error.message}</p> : null}
     </section>
   );

@@ -8,11 +8,9 @@ function Home() {
         <div className="container mt-5 mb-5 d-flex justify-content-center ">
           <section>
             <h2 className="text-center mt-5 mb-5 text-primary">
-              Descubre nuevos destinos y comparte tus experiencias!
+              Discover new destinations and experiences!
             </h2>
-
             <SearchBar />
-
             <Category />
           </section>
         </div>

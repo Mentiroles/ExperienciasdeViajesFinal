@@ -70,10 +70,12 @@ function Profile() {
               <div className="profile mr-3 ">
                 {user.photo ? (
                   <img
-                    src={`http://localhost:3000/photos/${user.id}/${user.photo}`}
+                    src={
+                      import.meta.env.VITE_BACKEND +
+                      `/photos/${user.id}/${user.photo}`
+                    }
                     alt="..."
-                    style={{ width: 150, height: 150, objectFit: "cover" }}
-                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
+                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3 fotoperfil"
                   />
                 ) : (
                   <img
@@ -135,7 +137,10 @@ function Profile() {
                           <Carousel.Item key={photo}>
                             <img
                               className="img-thumbnail "
-                              src={`http://localhost:3000/photos/${photo}`}
+                              src={
+                                import.meta.env.VITE_BACKEND +
+                                `/photos/${photo}`
+                              }
                               style={{
                                 width: 300,
                                 height: 300,
@@ -148,7 +153,10 @@ function Profile() {
                       </Carousel>
                     ) : (
                       <img
-                        src={`http://localhost:3000/photos/${recommendation.photo[0]}`}
+                        src={
+                          import.meta.env.VITE_BACKEND +
+                          `/photos/${recommendation.photo[0]}`
+                        }
                         alt={recommendation.photo[0]}
                         style={{
                           width: 300,
@@ -173,16 +181,6 @@ function Profile() {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-          <div className="py-4 px-4">
-            <h5 className="mb-3">Recent comments</h5>
-            <div className="p-4 bg-light rounded shadow-sm">
-              <p className="font-italic mb-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam.
-              </p>
             </div>
           </div>
         </div>
