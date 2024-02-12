@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import { postCreateRecommendationService } from "../../services/backend";
 import { useNavigate } from "react-router-dom";
 import { getLocationsService } from "../../services/backend";
-import {getCategoriesService} from "../../services/backend";
+import { getCategoriesService } from "../../services/backend";
 
 function RecommendationForm() {
   const navigate = useNavigate();
@@ -38,16 +38,18 @@ function RecommendationForm() {
       } catch (error) {
         console.log(error);
       }
-    }
-  
+    };
 
     loadingCategories();
     loadingLocations();
-    
   }, []);
 
   if (!user) {
     return <div>You must be logged in</div>;
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
   }
 
   const handleForm = async (e) => {

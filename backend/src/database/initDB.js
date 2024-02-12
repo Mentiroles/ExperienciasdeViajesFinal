@@ -320,7 +320,7 @@ CREATE TABLE recommendations (
     locationId INT UNSIGNED NOT NULL,
     lean_in VARCHAR(100) NULL,
     userId INT UNSIGNED NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userId) REFERENCES users(id),
     FOREIGN KEY (locationId) REFERENCES locations(id)

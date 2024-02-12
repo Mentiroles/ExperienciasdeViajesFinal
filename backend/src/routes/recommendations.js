@@ -414,40 +414,39 @@ router.patch(
 
 // ! AGREGAR IMAGENES A RECOMENDACIONES
 
-// const fileParser = fileUpload();
-// router.post(
-//   "/recommendations/:id/image",
-//   loggedInGuard,
-//   fileParser,
-//   wrapWithCatch(async (req, res) => {
-//     const recommendationId = req.params.id;
-//     const { image } = await validateAddImagePayload({
-//       image: req.files?.image,
-//       recommendationId: recommendationId,
-//       userId: req.currentUser.id,
-//     });
+router.post(
+  "/recommendations/:id/image",
+  loggedInGuard,
+  fileParser,
+  wrapWithCatch(async (req, res) => {
+    const recommendationId = req.params.id;
+    const { image } = await validateAddImagePayload({
+      image: req.files?.image,
+      recommendationId: recommendationId,
+      userId: req.currentUser.id,
+    });
 
-//     await fs.mkdir(PHOTOS_DIR, { recursive: true });
+    await fs.mkdir(PHOTOS_DIR, { recursive: true });
 
-//     const fileExtension = path.extname(image.name);
+    const fileExtension = path.extname(image.name);
 
-//     const randomFileName = crypto.randomUUID();
+    const randomFileName = crypto.randomUUID();
 
-//     const newFilePath = `${randomFileName}${fileExtension}`;
+    const newFilePath = `${randomFileName}${fileExtension}`;
 
-//     await image.mv(path.join(PHOTOS_DIR, newFilePath));
+    await image.mv(path.join(PHOTOS_DIR, newFilePath));
 
-//     const URL = `${newFilePath}`;
+    const URL = `${newFilePath}`;
 
-//     const [{ insertImage }] = await db.execute(
-//       `INSERT INTO recommendationPhotos (recommendationId, url)
-//     VALUES(?,?)`,
-//       [recommendationId, URL]
-//     );
+    const [{ insertImage }] = await db.execute(
+      `INSERT INTO recommendationPhotos (recommendationId, url)
+    VALUES(?,?)`,
+      [recommendationId, URL]
+    );
 
-//     sendOKCreated(res, insertImage);
-//   })
-// );
+    sendOKCreated(res, insertImage);
+  })
+);
 
 // ! DELETE RECOMENDACIONES
 

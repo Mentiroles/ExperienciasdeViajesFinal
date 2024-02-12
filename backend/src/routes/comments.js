@@ -39,18 +39,31 @@ router.post(
 // ! ELIMINAR COMENTARIOS
 
 router.delete(
-  "/recommendations/:id/comments",
+  "/recommendations/:id/comments/:commentId",
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
     const recommendationId = req.params.id;
     const userId = req.currentUser.id;
 
-    const [{ affectedRows }] = await db.execute(
-      `DELETE FROM comments WHERE recommendationId = ? AND userId = ?`,
-      [recommendationId, userId]
+    const [[comment]] = await db.execute(
+      `SELECT * FROM comments WHERE id = ?`,
+      [req.params.commentId]
     );
 
-    sendOK(res, { affectedRows });
+    if (!comment) {
+      throwCommentNotFoundError();
+    }
+
+    if (comment.userId !== userId) {
+      throwUnauthorizedError();
+    }
+
+    await db.execute(
+      `DELETE FROM comments WHERE id = ? AND recommendationId = ?`,
+      [req.params.commentId, recommendationId]
+    );
+
+    sendOK(res, "Comment deleted");
   })
 );
 
