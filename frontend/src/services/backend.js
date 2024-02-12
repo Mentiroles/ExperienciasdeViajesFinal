@@ -155,8 +155,6 @@ export const postCommentsService = async (
   token,
   message,
   userId,
-  nickName,
-  profilePhoto,
   recommendationId
 ) => {
   const id = window.location.pathname.split("/").pop();
@@ -172,12 +170,34 @@ export const postCommentsService = async (
         message,
         userId,
         recommendationId,
-        nickName,
-        profilePhoto,
       }),
     }
   );
   return response.json();
+};
+
+export const deleteCommentService = async (token, commentId) => {
+  const id = window.location.pathname.split("/").pop();
+
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND +
+      `/recommendations/${id}/comments/${commentId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
 };
 
 export const postCreateRecommendationService = async (formData, token) => {
@@ -341,4 +361,26 @@ export const searchRecommendationsByCountryService = async (country) => {
   );
 
   return filteredRecommendations;
+};
+
+export const postImagesRecommendationService = async (formData, token) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}/image`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: formData,
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
 };

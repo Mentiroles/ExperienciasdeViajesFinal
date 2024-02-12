@@ -3,7 +3,6 @@ import { getCategoriesService } from "../../services/backend";
 import Card from "react-bootstrap/Card";
 import Carousel from "react-bootstrap/Carousel";
 import "./Category.css";
-import { Link } from "react-router-dom";
 import { getRecommendationsByCategoryService } from "../../services/backend";
 import { useNavigate } from "react-router-dom";
 
@@ -42,7 +41,6 @@ function Category() {
     return <div>Loading...</div>;
   }
 
-  console.log(categories);
   return (
     <div
       className="recommendation-list d-flex justify-content-center"
@@ -61,7 +59,10 @@ function Category() {
                   background: "none" /* se puede quitar */,
                 }}>
                 <Card.Img
-                  src={`http://localhost:3000/photos/categories/${category.category}.svg`}
+                  src={
+                    import.meta.env.VITE_BACKEND +
+                    `/photos/categories/${category.category}.svg`
+                  }
                   alt={category.category}
                   className="card-img"
                   style={{
@@ -76,10 +77,8 @@ function Category() {
                     id="category"
                     key={category.category}
                     value={category.category}
-                    onClick={() => {
-                      setCategory(category.category);
-                      handleSearch();
-                    }}>
+                    onMouseUp={() => setCategory(category.id)}
+                    onClick={handleSearch}>
                     {category.category}
                   </Card.Title>
                 </Card.Body>
@@ -103,16 +102,23 @@ function Category() {
                   background: "none" /* se puede quitar */,
                 }}>
                 <Card.Img
-                  src={`http://localhost:3000/photos/categories/${category.category}.svg`}
+                  src={
+                    import.meta.env.VITE_BACKEND +
+                    `/photos/categories/${category.category}.svg`
+                  }
                   alt={category.category}
                   className="card-img"
                 />
                 <Card.Body className="text-center ">
-                  <Link to={`/recommendations/?category=${category.category}`}>
-                    <Card.Title className="text-primary">
-                      {category.category}
-                    </Card.Title>
-                  </Link>
+                  <Card.Title
+                    className="text-primary"
+                    id="category"
+                    key={category.id}
+                    value={category.id}
+                    onMouseUp={() => setCategory(category.id)}
+                    onClick={handleSearch}>
+                    {category.category}
+                  </Card.Title>
                 </Card.Body>
               </Card>
             </Carousel.Item>

@@ -53,7 +53,7 @@ const Recommendation = ({ recommendation }) => {
                         objectPosition: "center",
                         height: "250px",
                       }}
-                      src={`http://localhost:3000/photos/${photo}`}
+                      src={import.meta.env.VITE_BACKEND + `/photos/${photo}`}
                       alt="Reco1"
                     />
                   </Carousel.Item>

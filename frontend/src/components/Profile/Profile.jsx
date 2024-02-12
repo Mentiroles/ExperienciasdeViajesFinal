@@ -9,6 +9,7 @@ import "./Profile.css";
 import Button from "react-bootstrap/Button";
 import useRecommendation from "../../hooks/useRecommendation";
 import Carousel from "react-bootstrap/Carousel";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   let { user, token } = useContext(AuthContext);
@@ -26,6 +27,7 @@ function Profile() {
 
   const [recommendationsCount, setRecommendationsCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLikesCount = async () => {
@@ -66,12 +68,24 @@ function Profile() {
           <div className="px-4 pt-0 pb-4 bg-secondary text-center ">
             <div className="media align-items-end profile-header ">
               <div className="profile mr-3 ">
-                <img
-                  src={`http://localhost:3000/photos/${user.id}/${user.photo}`}
-                  alt="..."
-                  style={{ width: 150, height: 150, objectFit: "cover" }}
-                  className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
-                />
+                {user.photo ? (
+                  <img
+                    src={
+                      import.meta.env.VITE_BACKEND +
+                      `/photos/${user.id}/${user.photo}`
+                    }
+                    alt="..."
+                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3 fotoperfil"
+                  />
+                ) : (
+                  <img
+                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                    alt="..."
+                    style={{ width: 150, height: 150, objectFit: "cover" }}
+                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
+                  />
+                )}
+
                 <Link to={`/user/${user.id}`}>
                   <Button
                     type="button"
@@ -123,7 +137,10 @@ function Profile() {
                           <Carousel.Item key={photo}>
                             <img
                               className="img-thumbnail "
-                              src={`http://localhost:3000/photos/${photo}`}
+                              src={
+                                import.meta.env.VITE_BACKEND +
+                                `/photos/${photo}`
+                              }
                               style={{
                                 width: 300,
                                 height: 300,
@@ -136,7 +153,10 @@ function Profile() {
                       </Carousel>
                     ) : (
                       <img
-                        src={`http://localhost:3000/photos/${recommendation.photo[0]}`}
+                        src={
+                          import.meta.env.VITE_BACKEND +
+                          `/photos/${recommendation.photo[0]}`
+                        }
                         alt={recommendation.photo[0]}
                         style={{
                           width: 300,
@@ -146,9 +166,13 @@ function Profile() {
                         className="img-thumbnail mx-auto d-block"
                       />
                     )}
+
                     <h5
                       className="card-title  text-center  font-weight-bold text-primary "
-                      style={{ marginTop: "10px" }}>
+                      style={{ marginTop: "10px" }}
+                      onClick={() =>
+                        navigate(`/recommendations/${recommendation.id}`)
+                      }>
                       {recommendation.title}
                     </h5>
                     <p className="card-text text-center ">
@@ -157,16 +181,6 @@ function Profile() {
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-          <div className="py-4 px-4">
-            <h5 className="mb-3">Recent comments</h5>
-            <div className="p-4 bg-light rounded shadow-sm">
-              <p className="font-italic mb-0">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam.
-              </p>
             </div>
           </div>
         </div>
