@@ -2,7 +2,7 @@
 
 ## Title
 
-COMING SOON
+TRAVELOG
 
 ## Description
 
