@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 import { editProfileService } from "../../services/backend";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +34,7 @@ function ProfileForm() {
     try {
       await editProfileService(formData, token);
       navigate(`/user`);
+      window.location.reload();
     } catch (error) {
       setError(error);
     }
@@ -40,83 +42,78 @@ function ProfileForm() {
 
   return (
     <section>
-      <Container>
-        <Row>
-          <Col>
-            <Card>
-              <Card.Body>
-                <Card.Title>
-                  <h1>Edit Profile</h1>
-                </Card.Title>
-                <form onSubmit={handleEditProfile}>
-                  <div>
-                    <label>Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      placeholder="New email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label>New Nickname</label>
-                    <input
-                      type="text"
-                      value={nickName}
-                      autoComplete="nickName"
-                      placeholder="New Nickname"
-                      name="nickName"
-                      id="nickName"
-                      onChange={(e) => setNickName(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label>Current Password</label>
-                    <input
-                      type="password"
-                      name="currentPassword"
-                      id="currentPassword"
-                      placeholder="Current Password"
-                      required
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label>New Password</label>
-                    <input
-                      type="password"
-                      name="newPassword"
-                      id="newPassword"
-                      placeholder="New Password"
-                      autoComplete="new-password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label>Photo</label>
-                    <input
-                      type="file"
-                      onChange={(e) => setImageFile(e.target.files[0])}
-                    />
-                  </div>
-                  <div>
-                    <Button
-                      variant="primary"
-                      type="submit">
-                      Edit
-                    </Button>
-                  </div>
-                </form>
-                {error ? <p>{error.message}</p> : null}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+      <h1
+        className="text-primary mt-5 text-center "
+        style={{ fontSize: "2rem" }}>
+        Edit your profile!
+      </h1>
+
+      <Form
+        className="w-75 mx-auto mt-5"
+        onSubmit={handleEditProfile}>
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            id="email"
+            placeholder="New email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>New Nickname</Form.Label>
+          <Form.Control
+            type="text"
+            value={nickName}
+            autoComplete="nickName"
+            placeholder="New Nickname"
+            name="nickName"
+            id="nickName"
+            onChange={(e) => setNickName(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Current Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="currentPassword"
+            id="currentPassword"
+            placeholder="Current Password"
+            required
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>New Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="newPassword"
+            id="newPassword"
+            placeholder="New Password"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Photo</Form.Label>
+          <Form.Control
+            type="file"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
+        </Form.Group>
+        <div className="mt-3 ">
+          <Button
+            variant="primary"
+            type="submit">
+            Edit
+          </Button>
+        </div>
+      </Form>
+      {error ? <p>{error.message}</p> : null}
     </section>
   );
 }

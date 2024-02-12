@@ -7,7 +7,7 @@ import {
 } from "../../services/backend";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 function LikeButton() {
   const { token, user } = useContext(AuthContext);
@@ -60,7 +60,11 @@ function LikeButton() {
         </Button>
       ) : (
         <Link to="/login">
-          <Button variant="primary">Log in to like</Button>
+          <Button
+            variant="primary"
+            onClick={() => Navigate("/login")}>
+            Like
+          </Button>
         </Link>
       )}
     </div>
