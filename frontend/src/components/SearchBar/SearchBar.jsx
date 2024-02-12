@@ -42,12 +42,12 @@ function SearchBar() {
       <div className="d-none d-md-block ">
         <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
           {[
+            "North America",
+            "South America",
+            "Europe",
             "Africa",
             "Asia",
-            "Europe",
-            "North America",
             "Oceania",
-            "South America",
             "Antarctica",
           ].map((continent) => (
             <Dropdown key={continent}>

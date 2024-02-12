@@ -38,6 +38,7 @@ CREATE TABLE categories (
 console.log("Creando columnas de categorías...");
 await db.query(`
 INSERT INTO categories (category) VALUES
+('Choose a category'),
 ('Nature'),
 ('Cultural'),
 ('Gastronomic'),
