@@ -7,7 +7,7 @@ import {
 } from "../../services/backend";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 function LikeButton() {
   const { token, user } = useContext(AuthContext);
@@ -36,31 +36,55 @@ function LikeButton() {
 
   const handleLike = async () => {
     try {
-      if (!userHasLiked) {
-        await likeRecommendation(token);
-        setLikeCount(likeCount + 1);
-        setUserHasLiked(true);
-      } else {
-        await dislikeRecommendation(token);
-        setLikeCount(likeCount - 1);
-        setUserHasLiked(false);
-      }
+      await likeRecommendation(
+        token,
+        user.id,
+        recommendation.recommendation.id
+      );
+      setUserHasLiked(true);
+      setLikeCount(likeCount + 1);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  };
+
+  const handleDislike = async () => {
+    try {
+      await dislikeRecommendation(
+        token,
+        user.id,
+        recommendation.recommendation.id
+      );
+      setUserHasLiked(false);
+      setLikeCount(likeCount - 1);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
     <div>
       {user ? (
-        <Button
-          variant={userHasLiked ? "danger" : "primary"}
-          onClick={handleLike}>
-          {userHasLiked ? `Dislike (${likeCount})` : `Like (${likeCount})`}
-        </Button>
+        <div>
+          <Button
+            variant="primary"
+            onClick={handleLike}
+            style={{ marginRight: "10px" }}>
+            Like ({likeCount})
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDislike}>
+            Dislike
+          </Button>
+        </div>
       ) : (
         <Link to="/login">
-          <Button variant="primary">Log in to like</Button>
+          <Button
+            variant="primary"
+            onClick={() => Navigate("/login")}>
+            Like
+          </Button>
         </Link>
       )}
     </div>

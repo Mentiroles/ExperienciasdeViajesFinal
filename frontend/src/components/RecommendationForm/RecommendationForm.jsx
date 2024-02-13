@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import { postCreateRecommendationService } from "../../services/backend";
 import { useNavigate } from "react-router-dom";
 import { getLocationsService } from "../../services/backend";
+import { getCategoriesService } from "../../services/backend";
 
 function RecommendationForm() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function RecommendationForm() {
   const { token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [locations, setLocations] = useState([]);
   const [lean_in, setLean_in] = useState("");
@@ -29,7 +31,16 @@ function RecommendationForm() {
         console.log(error);
       }
     };
+    const loadingCategories = async () => {
+      try {
+        const data = await getCategoriesService();
+        setCategories(data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
+    loadingCategories();
     loadingLocations();
   }, []);
 
@@ -68,6 +79,8 @@ function RecommendationForm() {
             type="text"
             placeholder="Enter new title"
             required
+            minLength={8}
+            maxLength={50}
             className="mb-3"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
@@ -82,20 +95,27 @@ function RecommendationForm() {
           <Form.Select
             className="mb-3"
             aria-label="Default select example"
-            onChange={(e) => setCategory(e.target.value)}
             value={category}
             name="category"
-            id="category">
-            <option>Select your category</option>
-            <option value="1">Beach</option>
-            <option value="2">Historic</option>
-            <option value="3">Nature</option>
+            id="category"
+            required
+            onChange={(e) => setCategory(e.target.value)}>
+            {categories.map((category) => (
+              <option
+                key={category.id}
+                value={category.id}>
+                {category.category}
+              </option>
+            ))}
           </Form.Select>
           <Form.Control
             as="textarea"
             rows={3}
             className="mb-3"
             placeholder="Enter new description"
+            required
+            minLength={8}
+            maxLength={750}
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             name="description"
@@ -127,7 +147,9 @@ function RecommendationForm() {
             as="textarea"
             rows={3}
             className="mb-3"
+            required
             placeholder="Enter hashtags"
+            maxLength={200}
             onChange={(e) => setLean_in(e.target.value)}
             value={lean_in}
             name="lean_in"

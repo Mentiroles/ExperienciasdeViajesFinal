@@ -1,12 +1,15 @@
-### Experiencias de viajes
+## Title
 
-## Descripción
+Recommended Trips API
 
-- Aplicación de recomendaciones de viajes
-- Cada usuario puede crear una experiencia
-- Cada usuario puede ver las experiencias de otros usuarios
+## Description
 
-## Entidades
+This project involves the implementation of a RESTful API that powers a travel recommendation portal. The API provides the necessary endpoints to manage user interactions and data related to travel recommendations.
+
+The API interacts with several entities in the database, including users, locations, recommendations, recommendation photos, comments, and recommendation likes. It provides a range of endpoints to handle actions such as registration, login, profile management, recommendation creation, voting, and more.
+
+
+## Entities
 
 users:
 
@@ -54,15 +57,16 @@ recommendationsLikes:
 
 ## Endpoints
 
-- POST Registrarse ✔️
-- POST Loggearse ✔️
-- POST gestion de perfil(añadir foto) ✔️
-- PATCH editar perfil ✔️
-- POST crear recomendaciones(usuarios publicos) ✔️
-- PUT Likes y dislikes (usuarios publicos) ✔️
-- PATCH editar experiencia propia por id(usarios publicos) ✔️
-- DELETE borrar experiencia propia por id(usarios publicos) ✔️
-- GET mostrarlas todas las recomendaciones ✔️
-- GET buscar por categoria o lugar ✔️
-- GET mostrar la experiencia en detalle ✔️
-- GET ordenas las recomendaciones por likes ✔️
+- POST Register✔️
+- POST Log ✔️
+- POST Profile ✔️
+- PATCH Managa profile ✔️
+- POST Create recommendations ✔️
+- PUT Likes y dislikes ✔️
+- PATCH Edit experiencies by id  ✔️
+- DELETE Delete experiencies by id  ✔️
+- GET All recommendations ✔️
+- GET Search by category or country ✔️
+- GET Show the whole recommendation ✔️
+- GET Group recommendations by likes ✔️
+

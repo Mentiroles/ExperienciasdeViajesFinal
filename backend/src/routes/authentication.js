@@ -153,6 +153,7 @@ router.patch(
     }
 
     const userPhotoDir = path.join(PHOTOS_DIR, id.toString());
+    await fs.mkdir(userPhotoDir, { recursive: true });
 
     const files = await fs.readdir(userPhotoDir);
 

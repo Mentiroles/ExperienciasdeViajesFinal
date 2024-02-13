@@ -1,36 +1,35 @@
-import { useState, useContext } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { FormText } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
-import { loginUser } from '../../services/backend';
+import { useState, useContext } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import { FormText } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { loginUser } from "../../services/backend";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleForm = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const token= await loginUser({ email, password });
-    login(token);
-    navigate('/');
-  } catch (error) {
-    setError(error.message);
-  }
+    try {
+      const token = await loginUser({ email, password });
+      login(token);
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
   };
-
-
 
   return (
     <>
-      <Form className="w-75 mx-auto mt-5" onSubmit={handleForm}>
+      <Form
+        className="w-75 mx-auto mt-5"
+        onSubmit={handleForm}>
         <Form.Group className="mb-3">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -60,14 +59,26 @@ export const LoginForm = () => {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Check type="checkbox" label="Remember me." />
+          <Form.Check
+            type="checkbox"
+            label="Remember me."
+          />
         </Form.Group>
-        <Button variant="primary" className="w-100" type="submit">
+        <Form.Group className="mb-3">
+          {error && <FormText className="text-danger">{error}</FormText>}{" "}
+        </Form.Group>
+        <Button
+          variant="primary"
+          className="w-100"
+          type="submit">
           Login
         </Button>
-        {error && <FormText className="text-danger">{error}</FormText>}
+
         <FormText className="text-center">
-          Don't have an account? <Link to="/register"><Button variant="link">Register</Button></Link>
+          Don't have an account yet?{" "}
+          <Link to="/register">
+            <Button variant="link">Register</Button>
+          </Link>
         </FormText>
       </Form>
     </>

@@ -26,41 +26,44 @@ router.post(
     });
 
     const userId = req.currentUser.id;
-    const nickName = req.currentUser.nickName;
 
     const [{ insertId }] = await db.execute(
-      `INSERT INTO comments(message, recommendationId, userId, nickName) VALUES(?,?,?,?)`,
-      [message, recommendationId, userId, nickName]
+      `INSERT INTO comments(message, recommendationId, userId ) VALUES(?,?,?)`,
+      [message, recommendationId, userId]
     );
 
     sendOKCreated(res, insertId, message);
   })
 );
 
+// ! ELIMINAR COMENTARIOS
+
 router.delete(
-  "/recommendations/:recommendationId/comentarios/:commentId",
+  "/recommendations/:id/comments/:commentId",
   loggedInGuard,
   wrapWithCatch(async (req, res) => {
-    const recommendationId = req.params.recommendationId;
-    const commentId = req.params.commentId;
-    const currentUserId = req.currentUser.id;
+    const recommendationId = req.params.id;
+    const userId = req.currentUser.id;
 
-    const [comment] = await db.execute(
-      "SELECT * FROM comments WHERE  id = ? AND recommendationId = ?",
-      [commentId, recommendationId]
+    const [[comment]] = await db.execute(
+      `SELECT * FROM comments WHERE id = ?`,
+      [req.params.commentId]
     );
 
-    if (!commentId) {
+    if (!comment) {
       throwCommentNotFoundError();
     }
 
-    if (comment[0].userId !== currentUserId) {
+    if (comment.userId !== userId) {
       throwUnauthorizedError();
     }
 
-    await db.execute("DELETE FROM comments WHERE id = ?", [commentId]);
+    await db.execute(
+      `DELETE FROM comments WHERE id = ? AND recommendationId = ?`,
+      [req.params.commentId, recommendationId]
+    );
 
-    sendOK(res, { success: true });
+    sendOK(res, "Comment deleted");
   })
 );
 

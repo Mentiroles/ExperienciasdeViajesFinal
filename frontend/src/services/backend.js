@@ -64,6 +64,36 @@ export const getRecommendationsService = async () => {
   return json.recommendations;
 };
 
+export const getRecommendationByCountryIdService = async () => {
+  const id = window.location.search.split("/?location=").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}`
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};
+
+export const getRecommendationsByCategoryService = async () => {
+  const id = window.location.search.split("/?category=").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}`
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};
+
 export const getRecommendationByIdService = async () => {
   const id = window.location.pathname.split("/").pop();
   const response = await fetch(
@@ -124,7 +154,6 @@ export const postCommentsService = async (
   token,
   message,
   userId,
-  nickName,
   recommendationId
 ) => {
   const id = window.location.pathname.split("/").pop();
@@ -136,10 +165,38 @@ export const postCommentsService = async (
         Authorization: token,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message, userId, recommendationId, nickName }),
+      body: JSON.stringify({
+        message,
+        userId,
+        recommendationId,
+      }),
     }
   );
   return response.json();
+};
+
+export const deleteCommentService = async (token, commentId) => {
+  const id = window.location.pathname.split("/").pop();
+
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND +
+      `/recommendations/${id}/comments/${commentId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
 };
 
 export const postCreateRecommendationService = async (formData, token) => {
@@ -187,6 +244,17 @@ export const deleteRecommendationService = async (token) => {
 
 export const getLocationsService = async () => {
   const response = await fetch(import.meta.env.VITE_BACKEND + "/locations");
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+  return json;
+};
+
+export const getCategoriesService = async () => {
+  const response = await fetch(import.meta.env.VITE_BACKEND + "/categories");
 
   const json = await response.json();
 
@@ -269,3 +337,49 @@ export async function getLikesCountService(userId) {
     throw error;
   }
 }
+
+export const fetchAllRecommendationsService = async () => {
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + "/recommendations"
+  );
+
+  if (!response.ok) {
+    const json = await response.json();
+    throw new Error(json.message);
+  }
+
+  const json = await response.json();
+  return json;
+};
+
+export const searchRecommendationsByCountryService = async (country) => {
+  const allRecommendations = await fetchAllRecommendationsService();
+
+  const filteredRecommendations = allRecommendations.recommendations.filter(
+    (recommendation) => recommendation.locationId === country
+  );
+
+  return filteredRecommendations;
+};
+
+export const postImagesRecommendationService = async (formData, token) => {
+  const id = window.location.pathname.split("/").pop();
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND + `/recommendations/${id}/image`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: formData,
+    }
+  );
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.message);
+  }
+
+  return json;
+};

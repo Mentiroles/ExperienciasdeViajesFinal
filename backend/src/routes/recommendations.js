@@ -19,9 +19,20 @@ import {
   throwExistingLikeError,
   throwLikeNotFoundError,
 } from "../utils/errors.js";
+import { log } from "node:console";
 
 const router = express.Router();
 router.use(authMiddleware);
+
+// ! GET CATEGORIAS
+
+router.get(
+  "/categories",
+  wrapWithCatch(async (req, res) => {
+    const categories = await db.query("SELECT * FROM categories");
+    sendOK(res, categories);
+  })
+);
 
 // ! GET RECOMENDACIONES POR CATEGORIA, UBICACIÓN, ID O TODAS ORDENADAS POR LIKES
 
@@ -50,12 +61,12 @@ router.get(
 
     if (location && category) {
       query += `
-      WHERE locations.country = ? AND category = ?
+      WHERE locations.id = ? AND category = ?
       `;
       params = [location, category];
     } else if (location) {
       query += `
-      WHERE locations.country = ?
+      WHERE locations.id = ?
       `;
       params = [location];
     } else if (category) {
@@ -122,14 +133,13 @@ router.get(
         }
 
         const [[comments]] = await db.execute(
-          `SELECT * FROM comments WHERE recommendationId = ?`,
+          `SELECT C.*,nickName,photo AS profilePicture FROM comments C LEFT JOIN users U on U.id=C.userId WHERE recommendationId = ?`,
           [recommendation.id]
         );
-
         return {
           ...recommendation,
           likeCount: likeCount.count,
-          location,
+          location: location.name,
           user,
           photo,
           comments,
@@ -169,7 +179,13 @@ router.get(
     const photo = photoRows.map((row) => row.url);
 
     const [comments] = await db.execute(
-      `SELECT * FROM comments WHERE recommendationId = ?`,
+      `SELECT
+      comments.*,
+      users.nickName,
+      users.photo
+    FROM comments
+    INNER JOIN users ON comments.userId = users.id
+    WHERE recommendationId = ?`,
       [id]
     );
 
@@ -205,11 +221,27 @@ router.get(
         photos: photo,
         comments: comments,
         user: user[0],
-        location: location[0],
+        location: location[0].name,
         likeCount: likeCount.count,
         isLikedByCurrentUser: isLikedByCurrentUser,
       },
     });
+  })
+);
+
+//! GET RECOMENDACION POR ID DE USUARIO
+
+router.get(
+  "/user/:id/recommendations",
+  wrapWithCatch(async (req, res) => {
+    const { id } = req.params;
+
+    const [recommendations] = await db.execute(
+      `SELECT * FROM recommendations WHERE userId = ?`,
+      [id]
+    );
+
+    sendOK(res, { recommendations });
   })
 );
 
@@ -222,6 +254,8 @@ router.get(
     sendOK(res, locations);
   })
 );
+
+//! GET TODAS LAS RECOMENDACIONES POR PAIS
 
 //! GET IMAGEN
 
@@ -284,7 +318,6 @@ router.post(
   loggedInGuard,
   fileParser,
   wrapWithCatch(async (req, res) => {
-    console.log("Location:", req.body.country);
     const { title, category, country, description, lean_in } =
       await validateCreateRecommendationPayload(req.body);
 
@@ -379,40 +412,39 @@ router.patch(
 
 // ! AGREGAR IMAGENES A RECOMENDACIONES
 
-// const fileParser = fileUpload();
-// router.post(
-//   "/recommendations/:id/image",
-//   loggedInGuard,
-//   fileParser,
-//   wrapWithCatch(async (req, res) => {
-//     const recommendationId = req.params.id;
-//     const { image } = await validateAddImagePayload({
-//       image: req.files?.image,
-//       recommendationId: recommendationId,
-//       userId: req.currentUser.id,
-//     });
+router.post(
+  "/recommendations/:id/image",
+  loggedInGuard,
+  fileParser,
+  wrapWithCatch(async (req, res) => {
+    const recommendationId = req.params.id;
+    const { image } = await validateAddImagePayload({
+      image: req.files?.image,
+      recommendationId: recommendationId,
+      userId: req.currentUser.id,
+    });
 
-//     await fs.mkdir(PHOTOS_DIR, { recursive: true });
+    await fs.mkdir(PHOTOS_DIR, { recursive: true });
 
-//     const fileExtension = path.extname(image.name);
+    const fileExtension = path.extname(image.name);
 
-//     const randomFileName = crypto.randomUUID();
+    const randomFileName = crypto.randomUUID();
 
-//     const newFilePath = `${randomFileName}${fileExtension}`;
+    const newFilePath = `${randomFileName}${fileExtension}`;
 
-//     await image.mv(path.join(PHOTOS_DIR, newFilePath));
+    await image.mv(path.join(PHOTOS_DIR, newFilePath));
 
-//     const URL = `${newFilePath}`;
+    const URL = `${newFilePath}`;
 
-//     const [{ insertImage }] = await db.execute(
-//       `INSERT INTO recommendationPhotos (recommendationId, url)
-//     VALUES(?,?)`,
-//       [recommendationId, URL]
-//     );
+    const [{ insertImage }] = await db.execute(
+      `INSERT INTO recommendationPhotos (recommendationId, url)
+    VALUES(?,?)`,
+      [recommendationId, URL]
+    );
 
-//     sendOKCreated(res, insertImage);
-//   })
-// );
+    sendOKCreated(res, insertImage);
+  })
+);
 
 // ! DELETE RECOMENDACIONES
 
@@ -501,6 +533,17 @@ router.delete(
     } else {
       throwLikeNotFoundError();
     }
+  })
+);
+
+// ! GET CATEGORIAS
+
+router.get(
+  "/categories",
+  wrapWithCatch(async (req, res) => {
+    const [categories] = await db.execute(`SELECT * FROM categories`);
+
+    sendOK(res, { categories });
   })
 );
 

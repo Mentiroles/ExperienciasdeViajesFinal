@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { postCommentsService } from "../../services/backend";
+import {
+  postCommentsService,
+  deleteCommentService,
+} from "../../services/backend";
 import useSingleRecommendation from "../../hooks/useSingleRecommendation";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -26,7 +29,6 @@ const Comments = ({ recommendationId }) => {
         token,
         message,
         user.id,
-        user.nickName,
         recommendation.recommendation.id
       );
       window.location.reload();
@@ -37,44 +39,81 @@ const Comments = ({ recommendationId }) => {
     }
   };
 
-  const comments = recommendation.recommendation.comments;
+  const handleDelete = async (commentId) => {
+    try {
+      await deleteCommentService(token, commentId);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      window.location.reload();
+    }
+  };
 
+  const comments = recommendation.recommendation.comments;
   return (
     <>
       <section>
-        <div className="container mb-5 bg-light">
+        <div className="container mb-5">
           <div className="row ">
-            <h4>Comments</h4>
+            <h4
+              className="text-center text-primary"
+              style={{
+                fontSize: "25px",
+                marginTop: "20px",
+                marginBottom: "25px",
+              }}>
+              Comments
+            </h4>
 
             {comments.map((comment) => (
               <div
                 key={comment.id}
-                className="d-flex align-items-center gap-3 mb-3">
-                {!user.photo ? (
+                className="d-flex align-items-center gap-3"
+                style={{
+                  borderTop: "1px solid #dee2e6",
+
+                  padding: "10px",
+                  justifyContent: "space-between",
+                }}>
+                <div className="d-flex align-items-center">
                   <img
-                    src="https://i.imgur.com/yTFUilP.jpg"
-                    className="rounded-circle"
-                    width="40"
-                    height="40"
-                  />
-                ) : (
-                  <img
-                    src={`http://localhost:3000/photos/${comment.userId}/${user.photo}`}
+                    src={
+                      !comment.photo
+                        ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                        : `http://localhost:3000/photos/${comment.userId}/${comment.photo}`
+                    }
                     alt=""
                     className="rounded-circle"
                     width="40"
                     height="40"
                   />
+
+                  <p className="m-0 ms-2 ">
+                    {comment.nickName}: {comment.message}
+                  </p>
+                </div>
+
+                {user.nickName === comment.nickName && (
+                  <button
+                    className="btn btn-danger btn-sm rounded-pill ms-auto"
+                    type="button"
+                    onClick={() => handleDelete(comment.id)}>
+                    Delete
+                  </button>
                 )}
-                <p className="m-0">
-                  {comment.nickName}: {comment.message}
-                </p>
               </div>
             ))}
             <div className="w-100">
               <form id="algin-form">
                 <div className="form-group">
-                  <h4>Leave a comment</h4>
+                  <h4
+                    style={{
+                      marginTop: "20px",
+                      fontSize: "20px",
+                      width: "500px",
+                    }}>
+                    Leave a comment
+                  </h4>
                   <label>Message</label>
                   <textarea
                     name="msg"

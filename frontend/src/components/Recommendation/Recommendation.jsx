@@ -48,7 +48,12 @@ const Recommendation = ({ recommendation }) => {
                   <Carousel.Item key={photo}>
                     <img
                       className="d-block w-100"
-                      src={`http://localhost:3000/photos/${photo}`}
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        height: "250px",
+                      }}
+                      src={import.meta.env.VITE_BACKEND + `/photos/${photo}`}
                       alt="Reco1"
                     />
                   </Carousel.Item>

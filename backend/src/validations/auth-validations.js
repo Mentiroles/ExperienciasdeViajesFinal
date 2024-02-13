@@ -32,7 +32,13 @@ export async function validateRegisterPayload({ email, password, nickName }) {
   const { error } = schema.validate({ email, password, nickName });
 
   if (error) {
-    throw new Error(error.details[0].message);
+    if (error.details[0].message.includes("password")) {
+      throw new Error(
+        "Password must contain at least one letter and one number and be between 8 and 20 characters long"
+      );
+    } else {
+      throw new Error(error.details[0].message);
+    }
   }
 
   if (!email) {
