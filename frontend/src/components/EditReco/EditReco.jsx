@@ -5,6 +5,7 @@ import { editRecommendationService } from "../../services/backend";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import { getLocationsService } from "../../services/backend";
+import { getCategoriesService } from "../../services/backend";
 
 const EditReco = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const EditReco = () => {
   const { token } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [locations, setLocations] = useState([]);
   const [country, setCountry] = useState();
@@ -28,7 +30,16 @@ const EditReco = () => {
         console.log(error);
       }
     };
+    const loadingCategories = async () => {
+      try {
+        const data = await getCategoriesService();
+        setCategories(data[0]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
+    loadingCategories();
     loadingLocations();
   }, []);
 
@@ -66,6 +77,7 @@ const EditReco = () => {
             type="text"
             required
             className="mb-3"
+            placeholder="Enter new title"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
             name="title"
@@ -76,14 +88,15 @@ const EditReco = () => {
           <Form.Select
             className="mb-3"
             aria-label="Default select example"
-            onChange={(e) => setCategory(e.target.value)}
             value={category}
             name="category"
             id="category">
-            <option>Select your category</option>
-            <option value="1">Beach</option>
-            <option value="2">Historic</option>
-            <option value="3">Nature</option>
+            onChange={(e) => setCategory(e.target.value)}
+            <option
+              key={category.id}
+              value={category.id}>
+              {category.category}
+            </option>
           </Form.Select>
           <Form.Control
             as="textarea"
