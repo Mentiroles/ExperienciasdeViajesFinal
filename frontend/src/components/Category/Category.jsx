@@ -30,7 +30,6 @@ function Category() {
     }
     try {
       const data = await getRecommendationsByCategoryService(category);
-      console.log(data);
       navigate(`/recommendations/?category=${category}`);
     } catch (error) {
       console.log(error);
@@ -47,7 +46,7 @@ function Category() {
       style={{ width: "100%", margin: "0 auto" }}>
       <div className="d-none d-md-block   ">
         <div className="categories-list">
-          {categories.map((category) => (
+          {categories.slice(1).map((category) => (
             <div
               key={category.id}
               className="col-md-4">
@@ -91,15 +90,15 @@ function Category() {
       <div
         className="d-md-none my-5 d-flex justify-content-center"
         style={{ width: "100%", margin: "0 auto" }}>
-        <Carousel slide={false}>
-          {categories.map((category) => (
+        <Carousel variant="dark" slide={false}>
+          {categories.slice(1).map((category) => (
             <Carousel.Item key={category.id}>
               <Card
                 className="mb-3 mx-auto  border-0  shadow-sm rounded-3  "
                 style={{
                   width: "18rem",
                   cursor: "pointer",
-                  background: "none" /* se puede quitar */,
+                  background: "none",
                 }}>
                 <Card.Img
                   src={

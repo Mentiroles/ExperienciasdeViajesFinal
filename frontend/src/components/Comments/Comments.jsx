@@ -50,7 +50,6 @@ const Comments = ({ recommendationId }) => {
   };
 
   const comments = recommendation.recommendation.comments;
-  console.log(comments);
   return (
     <>
       <section>
@@ -80,7 +79,7 @@ const Comments = ({ recommendationId }) => {
                   <img
                     src={
                       !comment.photo
-                        ? "https://i.imgur.com/vgqbOTn.jpeg"
+                        ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                         : `http://localhost:3000/photos/${comment.userId}/${comment.photo}`
                     }
                     alt=""

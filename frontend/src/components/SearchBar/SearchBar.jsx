@@ -30,7 +30,6 @@ function SearchBar() {
     e.preventDefault();
     try {
       const data = await searchRecommendationsByCountryService(country);
-      console.log(data);
       navigate(`/recommendations/?location=${country}`);
     } catch (error) {
       console.log(error);

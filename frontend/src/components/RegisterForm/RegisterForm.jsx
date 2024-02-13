@@ -36,18 +36,6 @@ export const RegisterForm = () => {
         className="w-75 mx-auto mt-5"
         onSubmit={handleForm}>
         <Form.Group className="mb-3">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            id="nickName"
-            name="nickName"
-            value={nickName}
-            required
-            onChange={(e) => setNickName(e.target.value)}
-            placeholder="Enter username"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
           <Form.Label>Email address</Form.Label>
           <Form.Control
             type="email"
@@ -61,6 +49,18 @@ export const RegisterForm = () => {
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
           </Form.Text>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="text"
+            id="nickName"
+            name="nickName"
+            value={nickName}
+            required
+            onChange={(e) => setNickName(e.target.value)}
+            placeholder="Enter username"
+          />
         </Form.Group>
 
         <Form.Group className="mb-3">

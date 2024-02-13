@@ -24,8 +24,8 @@ export async function validateCreateRecommendationPayload(payload) {
     title: joi.string().max(100).required(),
     category: joi.string().max(100).required(),
     country: joi.number().required(),
-    description: joi.string().min(8).max(250).required(),
-    lean_in: joi.string().max(50),
+    description: joi.string().min(8).max(750).required(),
+    lean_in: joi.string().max(200),
   });
 
   const { error } = schema.validate({
@@ -91,7 +91,7 @@ export async function validateEditRecommendationPayload(payload) {
     title: joi.string().max(100).required(),
     category: joi.string().max(100).required(),
     country: joi.number().required(),
-    description: joi.string().min(8).max(250).required(),
+    description: joi.string().min(8).max(750).required(),
   });
 
   const { error } = schema.validate({
@@ -121,7 +121,6 @@ export async function validateEditRecommendationPayload(payload) {
 }
 
 function validateDescription(description) {
-  console.log("description: ", description);
   description = description.trim();
 
   if (!description) {

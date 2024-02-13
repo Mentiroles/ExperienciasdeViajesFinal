@@ -21,7 +21,6 @@ const useRecommendation = () => {
         if (window.location.pathname === "/recommendations/" && locationParam) {
           const data = await getRecommendationByCountryIdService(locationParam);
           setRecommendationsData(data.recommendations);
-          console.log(data);
         } else {
           const data = await getRecommendationsService();
           setRecommendationsData(data);
@@ -34,7 +33,6 @@ const useRecommendation = () => {
               categoryParam
             );
             setRecommendationsData(data.recommendations);
-            console.log(data);
           }
         }
       } catch (error) {

@@ -1,14 +1,34 @@
 import Recommendation from "../../components/Recommendation/Recommendation";
 import useRecommendation from "../../hooks/useRecommendation";
 import "./Recommendations.css";
+import { Button } from "react-bootstrap";
 
 const Recommendations = () => {
   const { recommendationsData } = useRecommendation();
 
   if (!recommendationsData || recommendationsData.length === 0) {
     return (
-      <div className="text-center mt-5 mb-5 text-primary h3">
-        No recommendations with those filters found!
+      <div className="fondo text-center ">
+        <h3 className="text-center text-primary mt-5">
+          No recommendations found!
+        </h3>
+        <p className="parrafo">
+          Sorry for the inconvenience, there are no recommendations available
+          yet!
+        </p>
+        <Button
+          variant="danger"
+          style={{ marginRight: "10px" }}
+          size="sm"
+          href="/">
+          Back to home!
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          href="/recommendations">
+          See all recommendations
+        </Button>
       </div>
     );
   }
