@@ -1,6 +1,6 @@
 #Title
 
-TRAVELOG
+TRAVELLOG
 
 # Description
 
