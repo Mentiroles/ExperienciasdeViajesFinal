@@ -48,10 +48,6 @@ function RecommendationForm() {
     return <div>You must be logged in</div>;
   }
 
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
   const handleForm = async (e) => {
     e.preventDefault();
     if (!imageFile) {
@@ -83,6 +79,8 @@ function RecommendationForm() {
             type="text"
             placeholder="Enter new title"
             required
+            minLength={8}
+            maxLength={50}
             className="mb-3"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
@@ -100,6 +98,7 @@ function RecommendationForm() {
             value={category}
             name="category"
             id="category"
+            required
             onChange={(e) => setCategory(e.target.value)}>
             {categories.map((category) => (
               <option
@@ -114,6 +113,9 @@ function RecommendationForm() {
             rows={3}
             className="mb-3"
             placeholder="Enter new description"
+            required
+            minLength={8}
+            maxLength={750}
             onChange={(e) => setDescription(e.target.value)}
             value={description}
             name="description"
@@ -145,7 +147,9 @@ function RecommendationForm() {
             as="textarea"
             rows={3}
             className="mb-3"
+            required
             placeholder="Enter hashtags"
+            maxLength={200}
             onChange={(e) => setLean_in(e.target.value)}
             value={lean_in}
             name="lean_in"

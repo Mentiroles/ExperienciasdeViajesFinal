@@ -8,7 +8,6 @@ import { AuthContext } from "../../context/AuthContext";
 
 function NavBarx() {
   const { user, logout } = useContext(AuthContext);
-  console.log(user);
   return (
     <Navbar
       expand="lg"

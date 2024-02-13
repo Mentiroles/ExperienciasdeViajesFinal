@@ -7,17 +7,14 @@ const AuthContext = createContext({});
 function AuthContextProviderComponent({ children }) {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [user, setUser] = useState(null);
-  console.log(token);
   useEffect(() => {
     localStorage.setItem("token", token);
   }, [token]);
-  console.log("token", token);
   useEffect(() => {
     const getMyUserData = async () => {
       try {
         const data = await getMyUserDataService({ token });
         setUser(data);
-        console.log(data);
       } catch (error) {
         logout();
       }

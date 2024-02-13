@@ -30,7 +30,7 @@ This project aims to create a community-driven platform where users can share an
 
 ## Installation
 
-npm install
+npm i
 npm run dev
 
 # Authors
@@ -40,6 +40,11 @@ npm run dev
 - [Glorian Arrieta](https://www.linkedin.com/in/glorian-arrieta-jaimes-5523b4225)
 - [Vanessa Rezk](https://www.linkedin.com/in/vanessarezk)
 
+## Testing Usernames
 
+glorian@gmail.com ✔️ password: glorian1
+vanerezk@gmail.com ✔️ password: vanerezk1
+franchus@gmail.com ✔️ password: franchus1
+angel@gmail.com ✔️ password: angelcabrera1
 
 

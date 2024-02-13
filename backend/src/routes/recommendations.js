@@ -136,7 +136,6 @@ router.get(
           `SELECT C.*,nickName,photo AS profilePicture FROM comments C LEFT JOIN users U on U.id=C.userId WHERE recommendationId = ?`,
           [recommendation.id]
         );
-        console.log(comments);
         return {
           ...recommendation,
           likeCount: likeCount.count,
@@ -319,7 +318,6 @@ router.post(
   loggedInGuard,
   fileParser,
   wrapWithCatch(async (req, res) => {
-    console.log("Location:", req.body.country);
     const { title, category, country, description, lean_in } =
       await validateCreateRecommendationPayload(req.body);
 

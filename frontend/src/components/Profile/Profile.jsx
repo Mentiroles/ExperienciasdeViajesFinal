@@ -13,8 +13,6 @@ import { useNavigate } from "react-router-dom";
 
 function Profile() {
   let { user, token } = useContext(AuthContext);
-  console.log(token);
-  console.log(user);
 
   const { recommendationsData } = useRecommendation();
   const userRecommendations = recommendationsData
@@ -22,8 +20,6 @@ function Profile() {
         (recommendation) => recommendation.user.id === user.id
       )
     : [];
-
-  console.log(recommendationsData);
 
   const [recommendationsCount, setRecommendationsCount] = useState(0);
   const [likesCount, setLikesCount] = useState(0);
@@ -75,7 +71,8 @@ function Profile() {
                       `/photos/${user.id}/${user.photo}`
                     }
                     alt="..."
-                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3 fotoperfil"
+                    style={{ width: 150, height: 150, objectFit: "cover" }}
+                    className="rounded mb-2 img-thumbnail img-responsive d-block mx-auto shadow mt-3"
                   />
                 ) : (
                   <img

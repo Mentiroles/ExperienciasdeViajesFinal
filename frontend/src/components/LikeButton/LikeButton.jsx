@@ -36,28 +36,48 @@ function LikeButton() {
 
   const handleLike = async () => {
     try {
-      if (!userHasLiked) {
-        await likeRecommendation(token);
-        setLikeCount(likeCount + 1);
-        setUserHasLiked(true);
-      } else {
-        await dislikeRecommendation(token);
-        setLikeCount(likeCount - 1);
-        setUserHasLiked(false);
-      }
+      await likeRecommendation(
+        token,
+        user.id,
+        recommendation.recommendation.id
+      );
+      setUserHasLiked(true);
+      setLikeCount(likeCount + 1);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  };
+
+  const handleDislike = async () => {
+    try {
+      await dislikeRecommendation(
+        token,
+        user.id,
+        recommendation.recommendation.id
+      );
+      setUserHasLiked(false);
+      setLikeCount(likeCount - 1);
+    } catch (error) {
+      console.error(error);
     }
   };
 
   return (
     <div>
       {user ? (
-        <Button
-          variant={userHasLiked ? "danger" : "primary"}
-          onClick={handleLike}>
-          {userHasLiked ? `Dislike (${likeCount})` : `Like (${likeCount})`}
-        </Button>
+        <div>
+          <Button
+            variant="primary"
+            onClick={handleLike}
+            style={{ marginRight: "10px" }}>
+            Like ({likeCount})
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDislike}>
+            Dislike
+          </Button>
+        </div>
       ) : (
         <Link to="/login">
           <Button

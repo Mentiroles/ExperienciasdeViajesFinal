@@ -69,3 +69,4 @@ recommendationsLikes:
 - GET Search by category or country ✔️
 - GET Show the whole recommendation ✔️
 - GET Group recommendations by likes ✔️
+
