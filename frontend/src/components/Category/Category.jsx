@@ -41,47 +41,29 @@ function Category() {
   }
 
   return (
-    <div
-      className="recommendation-list d-flex justify-content-center"
-      style={{ width: "100%", margin: "0 auto" }}>
-      <div className="d-none d-md-block   ">
+    <div className="recommendation-list d-flex justify-content-center">
+      <div className="d-none d-md-block">
         <div className="categories-list">
           {categories.slice(1).map((category) => (
             <div
               key={category.id}
-              className="col-md-4">
-              <Card
-                className="mb-3 mx-auto mt-5 border-0 shadow-sm rounded-3 "
-                style={{
-                  width: "12rem",
-                  cursor: "pointer",
-                  background: "none" /* se puede quitar */,
-                }}>
-                <Card.Img
+              className="category-item">
+              <div className="category-image">
+                <img
                   src={
                     import.meta.env.VITE_BACKEND +
                     `/photos/categories/${category.category}.svg`
                   }
                   alt={category.category}
-                  className="card-img"
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    margin: "0 auto",
-                  }}
                 />
-                <Card.Body className="text-center">
-                  <Card.Title
-                    className="text-primary"
-                    id="category"
-                    key={category.category}
-                    value={category.category}
-                    onMouseUp={() => setCategory(category.id)}
-                    onClick={handleSearch}>
-                    {category.category}
-                  </Card.Title>
-                </Card.Body>
-              </Card>
+              </div>
+              <div className="category-details">
+                <h3
+                  className="text-primary"
+                  onClick={() => handleSearch(category.id)}>
+                  {category.category}
+                </h3>
+              </div>
             </div>
           ))}
         </div>
@@ -90,16 +72,12 @@ function Category() {
       <div
         className="d-md-none my-5 d-flex justify-content-center"
         style={{ width: "100%", margin: "0 auto" }}>
-        <Carousel variant="dark" slide={false}>
+        <Carousel
+          variant="dark"
+          slide={false}>
           {categories.slice(1).map((category) => (
             <Carousel.Item key={category.id}>
-              <Card
-                className="mb-3 mx-auto  border-0  shadow-sm rounded-3  "
-                style={{
-                  width: "18rem",
-                  cursor: "pointer",
-                  background: "none",
-                }}>
+              <Card id="categorycarousel">
                 <Card.Img
                   src={
                     import.meta.env.VITE_BACKEND +
