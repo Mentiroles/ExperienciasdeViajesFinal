@@ -7,6 +7,7 @@ import useSingleRecommendation from "../../hooks/useSingleRecommendation";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import "./Comments.css";
 
 const Comments = ({ recommendationId }) => {
   const { recommendation, error, loading } =
@@ -55,26 +56,12 @@ const Comments = ({ recommendationId }) => {
       <section>
         <div className="container mb-5">
           <div className="row ">
-            <h4
-              className="text-center text-primary"
-              style={{
-                fontSize: "25px",
-                marginTop: "20px",
-                marginBottom: "25px",
-              }}>
-              Comments
-            </h4>
+            <h4 className="text-primary">Comments</h4>
 
             {comments.map((comment) => (
               <div
                 key={comment.id}
-                className="d-flex align-items-center gap-3"
-                style={{
-                  borderTop: "1px solid #dee2e6",
-
-                  padding: "10px",
-                  justifyContent: "space-between",
-                }}>
+                className="comments">
                 <div className="d-flex align-items-center">
                   <img
                     src={
@@ -106,14 +93,7 @@ const Comments = ({ recommendationId }) => {
             <div className="w-100">
               <form id="algin-form">
                 <div className="form-group">
-                  <h4
-                    style={{
-                      marginTop: "20px",
-                      fontSize: "20px",
-                      width: "500px",
-                    }}>
-                    Leave a comment
-                  </h4>
+                  <h4>Leave a comment</h4>
                   <label>Message</label>
                   <textarea
                     name="msg"
